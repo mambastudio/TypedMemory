@@ -68,4 +68,4 @@ try (Arena arena = Arena.ofConfined()) {
 }
 ~~~
 
-Point is treated as a value description. Memory layout is derived from the type. No Java objects are allocated per element. Access is bounds-checked and type-checked
+Point is treated as a value description. Memory layout is derived from the record type (due to having transparent state description). No Java objects are allocated per element. Access is bounds-checked and type-checked
