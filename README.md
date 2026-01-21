@@ -62,10 +62,10 @@ try (Arena arena = Arena.ofConfined()) {
     Mem<Point> points = Mem.of(Point.class, arena, 10);
     points.set(0, new Point(10, 20));
 
-    if(get(0) instanceof Point(var x, var y){
+    if(points.get(0) instanceof Point(var x, var y){
          IO.println("x: " +x+ "y: " +y);
     }
 }
 ~~~
 
-Point is treated as a value description. Memory layout is derived from the record type (due to having transparent state description). No Java objects are allocated per element. Access is bounds-checked and type-checked
+Point is treated as a value description. Memory layout is derived from the record type (due to having transparent state description). No Java objects are allocated per element. Access is bounds-checked and type-checked.
