@@ -3,7 +3,7 @@ Typed Memory is a Java library for working with strongly-typed views over off-he
 
 ## Motivation
 
-Java’s object model is excellent for identity-based programming, but it is not ideal for:
+Java’s object model is excellent for identity-based programming and also [data oriented programming](https://www.infoq.com/articles/data-oriented-programming-java/), but it is not ideal for:
 * Data-oriented design (DOD)
 * Flat, cache-friendly layouts
 * Interop with native code
