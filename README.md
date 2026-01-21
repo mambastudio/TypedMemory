@@ -14,4 +14,42 @@ The FFM API gives access to raw memory, but it is untyped and low-level. Typed M
 
 # Core Idea
 
+Instead of this:
 
+MemorySegment segment = arena.allocate(24);
+int x = segment.get(ValueLayout.JAVA_INT, 0);
+
+
+You write this:
+
+try (Arena arena = Arena.ofConfined()) {
+    Mem<Point> points = Mem.of(Point.class, arena, 10);
+
+    points.get(0).x(10);
+    points.get(0).y(20);
+}
+
+
+The memory is still off-heap.
+The lifetime is still explicit.
+But the access is typed, structured, and safe.
+
+Example
+record Point(int x, int y) {}
+
+try (Arena arena = Arena.ofConfined()) {
+    Mem<Point> points = Mem.of(Point.class, arena, 10);
+
+    Point p0 = points.get(0);
+    p0.x(3);
+    p0.y(4);
+}
+
+
+Point is treated as a value description
+
+Memory layout is derived from the type
+
+No Java objects are allocated per element
+
+Access is bounds-checked and type-checked
