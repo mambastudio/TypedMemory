@@ -65,6 +65,7 @@ try (Arena arena = Arena.ofConfined()) {
     if(points.get(0) instanceof Point(var x, var y){
          IO.println("x: " +x+ "y: " +y);
     }
+    //Point(var x, var y) = points.get(0); //Once java gets pattern assignment https://mail.openjdk.org/pipermail/amber-spec-experts/2026-January/004306.html
 }
 ~~~
 
