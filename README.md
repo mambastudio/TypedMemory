@@ -16,15 +16,37 @@ The FFM API gives access to raw memory, but it is untyped and low-level. Typed M
 
 Instead of this:
 ~~~java
-MemorySegment segment = arena.allocate(24);
-int x = segment.get(ValueLayout.JAVA_INT, 0);
+MemoryLayout POINT_LAYOUT = MemoryLayout.structLayout(
+                    ValueLayout.JAVA_INT.withName("x"),
+                    ValueLayout.JAVA_INT.withName("y"));
+
+VarHandle X = POINT_LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("x"));
+VarHandle Y = POINT_LAYOUT.varHandle(MemoryLayout.PathElement.groupElement("y"));
+
+void main(){   
+    try (Arena arena = Arena.ofConfined()) {
+        long POINT_SIZE = POINT_LAYOUT.byteSize(); // 8 bytes
+
+        MemorySegment segment = arena.allocate(POINT_SIZE * 10, POINT_LAYOUT.byteAlignment());
+
+        int index = 0;
+        long offset = index * POINT_SIZE;
+
+        X.set(segment, offset, 10);
+        Y.set(segment, offset, 20);
+    }   
+}
 ~~~
 
 You write this:
 ~~~java
-try (Arena arena = Arena.ofConfined()) {
-    Mem<Point> points = Mem.of(Point.class, arena, 10);
-    points.set(0, new Point(10, 20));
+record Point(int x, int y) {}
+
+void main(){
+    try (Arena arena = Arena.ofConfined()) {
+        Mem<Point> points = Mem.of(Point.class, arena, 10);
+        points.set(0, new Point(10, 20));
+    }
 }
 ~~~
 
@@ -38,6 +60,7 @@ record Point(int x, int y) {}
 
 try (Arena arena = Arena.ofConfined()) {
     Mem<Point> points = Mem.of(Point.class, arena, 10);
+    points.set(0, new Point(10, 20));
 
     if(get(0) instanceof Point(var x, var y){
          IO.println("x: " +x+ "y: " +y);
