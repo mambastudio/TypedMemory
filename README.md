@@ -21,14 +21,12 @@ int x = segment.get(ValueLayout.JAVA_INT, 0);
 ~~~
 
 You write this:
-
+~~~java
 try (Arena arena = Arena.ofConfined()) {
     Mem<Point> points = Mem.of(Point.class, arena, 10);
-
-    points.get(0).x(10);
-    points.get(0).y(20);
+    points.set(0, new Point(10, 20));
 }
-
+~~~
 
 The memory is still off-heap.
 The lifetime is still explicit.
@@ -38,13 +36,12 @@ Example
 ~~~java
 record Point(int x, int y) {}
 
-
 try (Arena arena = Arena.ofConfined()) {
     Mem<Point> points = Mem.of(Point.class, arena, 10);
 
-    Point p0 = points.get(0);
-    p0.x(3);
-    p0.y(4);
+    if(get(0) instanceof Point(var x, var y){
+         IO.println("x: " +x+ "y: " +y);
+    }
 }
 ~~~
 
