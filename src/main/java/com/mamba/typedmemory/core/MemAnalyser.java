@@ -67,16 +67,5 @@ public interface MemAnalyser {
             case "" -> "";
             default -> str.substring(0, 1).toLowerCase() + str.substring(1);
         };
-    }
-        
-    public static long checkRecordCompatible(Class<? extends Record> recordClass){
-        if (recordClass.getRecordComponents().length == 0) 
-            throw new IllegalStateException("Error: record %s has no fields".formatted(recordClass.getSimpleName()));
-       
-        return switch (recordClass) {
-            case Class<?> c when c.isAnnotationPresent(struct.class) -> c.getAnnotation(struct.class).align();
-            case Class<?> c when c.isAnnotationPresent(union.class)  -> c.getAnnotation(union.class).align();
-            default -> throw new IllegalStateException("Error: record %s has no struct or union annotation".formatted(recordClass.getSimpleName()));
-        };
-    }
+    }        
 }

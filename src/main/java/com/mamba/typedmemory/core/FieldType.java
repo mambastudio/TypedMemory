@@ -8,12 +8,11 @@ package com.mamba.typedmemory.core;
  *
  * @author user
  */
-import com.mamba.typedmemory.annotation.array;
 import static com.mamba.typedmemory.core.MemAnalyser.computeAlignmentOffset;
-import static com.mamba.typedmemory.core.MemAnalyser.isPowerOfTwo;
 import java.lang.foreign.ValueLayout;
 import java.lang.reflect.RecordComponent;
 import java.util.Optional;
+import com.mamba.typedmemory.annotation.size;
 
 public sealed interface FieldType extends MemAnalyser{
     
@@ -43,9 +42,7 @@ public sealed interface FieldType extends MemAnalyser{
             return type.getSimpleName();
         }
         
-        public long alignByteSize(){      
-            //this is where @struct(align = value) is checked, in future, this will be replaced with @align(size = 0) instead
-            long preferredAlignment = MemAnalyser.checkRecordCompatible(type);
+        public long alignByteSize(){                 
             long maxFieldSize = 0;
 
             // Determine the largest field size, including nested arrays
@@ -55,26 +52,7 @@ public sealed interface FieldType extends MemAnalyser{
                 maxFieldSize = Math.max(maxFieldSize, fieldSize);
             }
 
-            if(preferredAlignment < 0)
-                return maxFieldSize;
-
-            // Validate alignment against the maximum field size
-            if (preferredAlignment < maxFieldSize) 
-                throw new IllegalStateException(String.format(
-                    "Error: @align value (%d bytes) is less than the size of the largest field (%d bytes) in record %s%n",
-                    preferredAlignment, maxFieldSize, type.getSimpleName()
-                ));
-
-            // Ensure alignment is a power of two
-            if (!isPowerOfTwo(preferredAlignment)) {
-                throw new IllegalStateException(String.format(
-                    "Error: @align value (%d bytes) must be a power of 2 in record %s%n",
-                    preferredAlignment, type.getSimpleName()
-                ));
-            }
-
-            // If all checks pass
-            return preferredAlignment;
+            return maxFieldSize;
         }
         
         public MemSize byteSize(){        
@@ -138,12 +116,12 @@ public sealed interface FieldType extends MemAnalyser{
         Class<?> type = component.getType();
         String name = component.getName();
         
-        Optional<array> arrayAnnotation = switch(type.isArray()){
-            case true -> switch(component.getAnnotation(array.class)){
+        Optional<size> arrayAnnotation = switch(type.isArray()){
+            case true -> switch(component.getAnnotation(size.class)){
                     case null-> throw new IllegalStateException("@array annotation is not defined for field " + name+ " of type " +type.getTypeName()+ ", in " +component.getDeclaringRecord().getSimpleName()+ " record");
-                    case array a -> switch(a.size() > 0){
+                    case size a -> switch(a.value() > 0){
                         case true -> Optional.of(a);
-                        case false -> throw new IllegalStateException("Array size is required for field: " + name+ " of type " +type.getTypeName()+ ". Value provide is " +a.size());
+                        case false -> throw new IllegalStateException("Array size is required for field: " + name+ " of type " +type.getTypeName()+ ". Value provide is " +a.value());
                     };
                 };            
             case false -> Optional.empty();            
@@ -152,7 +130,7 @@ public sealed interface FieldType extends MemAnalyser{
         return switch (type) {
             case Class<?> primitive when primitive.isPrimitive()                    -> new PrimitiveField(name, primitive);            
             case Class<?> record when Record.class.isAssignableFrom(record)         -> new RecordField(name, (Class<? extends Record>) record);
-            case Class<?> array when array.isArray() && arrayAnnotation.isPresent() -> new ArrayField(name, array, array.getComponentType(), arrayAnnotation.get().size());
+            case Class<?> array when array.isArray() && arrayAnnotation.isPresent() -> new ArrayField(name, array, array.getComponentType(), arrayAnnotation.get().value());
             default                                                                 -> throw new UnsupportedOperationException("Unsupported field type for field '" + name + "': " + type.getName() + ". Only primitives, records, and arrays are supported.");            
         };
     }
