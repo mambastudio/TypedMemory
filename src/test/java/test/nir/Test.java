@@ -4,7 +4,9 @@
  */
 package test.nir;
 
-import static java.lang.constant.ConstantDescs.CD_Integer;
+import java.util.List;
+import static test.nir.Stmt.*;
+import static test.nir.Expr.*;
 
 /**
  *
@@ -12,16 +14,20 @@ import static java.lang.constant.ConstantDescs.CD_Integer;
  */
 public class Test {
     void main(){
-        //return a = new int[3];
-        var expr = new AReturn(
-                        new StoreLocalExpr(
-                            1,
-                            new ANewArray(CD_Integer, new IConst(3))
-                        )
-                    );
-        
-        var out = new DebugEmitter();
-        var lowering = new Lowering(out);
-        lowering.lower(expr);
+        Stmt program =  new Block(List.of(
+                            new StoreLocal(
+                                1,
+                                new NewIntArray(new IntConst(3))
+                            ),
+                            new ArrayStore(
+                                new LoadLocal(1),
+                                new IntConst(0),
+                                new IntConst(4)
+                            ),
+                            new Return(
+                                new LoadLocal(1)
+                            )
+                        ));
+        program.emit(new DebugEmitter());
     }
 }

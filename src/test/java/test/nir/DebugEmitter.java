@@ -6,32 +6,38 @@ package test.nir;
 
 /**
  *
- * @author jmburu
+ * @author joemw
  */
-public final class DebugEmitter implements CodeEmitter {
-    @Override 
-    public void emitIConst(int value) {
+public class DebugEmitter implements CodeEmitter{
+
+    @Override
+    public void iconst(int value) {
         IO.println("iconst_" + value);
     }
 
-    @Override 
-    public void emitANewArray(String className) {
-        IO.println("anewarray " + className);
+    @Override
+    public void newarrayInt() {
+        IO.println("newarray int");
     }
 
-    @Override 
-    public void emitIStore(int slot) {
-        IO.println("istore_" + slot);
+    @Override
+    public void aload(int slot) {
+        IO.println("aload_" + slot);
     }
 
-    @Override 
-    public void emitAReturn() {
+    @Override
+    public void astore(int slot) {
+        IO.println("astore_" + slot);
+    }
+
+    @Override
+    public void iastore() {
+        IO.println("iastore");
+    }
+
+    @Override
+    public void areturn() {
         IO.println("areturn");
     }
-
-    @Override 
-    public void emitDup() {
-        IO.println("dup");
-    }
+    
 }
-

@@ -4,24 +4,33 @@
  */
 package test.nir;
 
-import java.util.List;
-
 /**
  *
- * @author jmburu
+ * @author joemw
  */
 public interface Expr {
-    List<Expr> children();
-
-    int pops();      // how many stack values it consumes
-    int pushes();    // how many it produces
-
-    boolean terminalConsumer(); // allowed to destroy value?
     
-    boolean consumesOwnResult();
+    record IntConst(int value) implements Expr {
+        @Override
+        public void emit(CodeEmitter out) {
+            out.iconst(value);   // pushes one value
+        }
+    }
     
-    /** Emit the actual JVM instruction(s)
-     * @param out */
+    record LoadLocal(int slot) implements Expr {
+        @Override
+        public void emit(CodeEmitter out) {
+            out.aload(slot);     // pushes one value
+        }
+    }
+    
+    record NewIntArray(Expr length) implements Expr {
+        @Override
+        public void emit(CodeEmitter out) {
+            length.emit(out);    // pushes length
+            out.newarrayInt();   // pops length, pushes array
+        }
+    }
+    
     void emit(CodeEmitter out);
 }
-

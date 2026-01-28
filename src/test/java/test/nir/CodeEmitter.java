@@ -6,12 +6,13 @@ package test.nir;
 
 /**
  *
- * @author jmburu
+ * @author joemw
  */
 public interface CodeEmitter {
-    void emitIConst(int value);
-    void emitANewArray(String className);
-    void emitIStore(int slot);
-    void emitAReturn();
-    void emitDup();
+    void iconst(int v);
+    void newarrayInt();
+    void aload(int slot);
+    void astore(int slot);
+    void iastore();
+    void areturn();
 }

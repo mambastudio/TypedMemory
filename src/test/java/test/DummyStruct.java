@@ -15,8 +15,10 @@ import java.lang.invoke.VarHandle;
  */
 public class DummyStruct {
     private final static MemoryLayout layout = MemoryLayout.structLayout(
-                                                    ValueLayout.JAVA_BYTE.withName("x")
+                                                    ValueLayout.JAVA_BYTE.withName("x"),
+                                                    MemoryLayout.paddingLayout(3),
+                                                    ValueLayout.JAVA_INT.withName("y"),
+                                                    ValueLayout.JAVA_LONG.withName("z")
                                                 ).withName("Point");
     
-    private final static VarHandle xPointStructLayoutImplHandle = layout.varHandle(PathElement.groupElement("x"));
 }

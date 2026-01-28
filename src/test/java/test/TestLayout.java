@@ -18,12 +18,13 @@ public class TestLayout {
     }
     
     public void test1(){
-        record Point(byte x){}        
+        record Point(byte x, int y, long z){}        
         
         MemLayout mL = MemLayout.of(Point.class);       
         MemLayoutString mLS = MemLayoutString.of(mL);
-        System.out.println(mL);
-        System.out.println(mLS.varNames());
+        IO.println(mL);
+        IO.println(mLS.varNames());
+        IO.println(mLS.varHandleFields());
     }
     
     public void test2(){
@@ -31,7 +32,7 @@ public class TestLayout {
         
         MemLayout mL = MemLayout.of(Point.class);       
         MemLayoutString mLS = MemLayoutString.of(mL);
-        System.out.println(mL);
-        System.out.println(mLS.varNames());
+        IO.println(mL);
+        IO.println(mLS.varNames());
     }
 }
