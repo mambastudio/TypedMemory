@@ -5,6 +5,7 @@
 package test.emit;
 
 import java.lang.classfile.CodeBuilder;
+import java.lang.constant.ClassDesc;
 import test.ir.Op;
 
 /**
@@ -12,10 +13,10 @@ import test.ir.Op;
  * @author joemw
  */
 public class OpEmitter {
-    public static void emit(CodeBuilder b, Op op) {
+    public static void emit(CodeBuilder b, ClassDesc currentClass, Op op) {
         switch (op) {
             case Op.PutStatic p -> {
-                CodeEmitter.emit(b, p.value());   // Expr → value on stack
+                CodeEmitter.emit(b, currentClass, p.value());   // Expr → value on stack
                 b.putstatic(p.owner(), p.name(), p.type());
             }
             case Op.Return _ ->

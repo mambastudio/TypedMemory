@@ -17,7 +17,8 @@ public sealed interface Expr {
     enum InvokeKind {STATIC, VIRTUAL, INTERFACE, SPECIAL}
     
     sealed interface BaseExpr extends Expr { // no children
-        record GetStatic(ClassDesc owner, String name, ClassDesc type) implements BaseExpr {}
+        record GetStatic(String name, ClassDesc type) implements BaseExpr {}
+        record GetStaticExternal(ClassDesc owner, String name, ClassDesc type) implements BaseExpr {}
         record StringLiteral(String value) implements BaseExpr {}
         record LongLiteral(long value) implements BaseExpr {}
     }      

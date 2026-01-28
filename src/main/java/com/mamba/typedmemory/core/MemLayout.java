@@ -29,6 +29,10 @@ public record MemLayout(MemoryLayout layout, Optional<List<MemoryLayout>> groupL
         Objects.requireNonNull(layout);
         Objects.requireNonNull(groupLayouts);
     }
+    
+    public MemLayout(MemoryLayout layout){
+        this(layout, Optional.empty());
+    }
         
     public boolean hasInnerLayouts(){
        return (groupLayouts.isPresent() && !groupLayouts.get().isEmpty());        

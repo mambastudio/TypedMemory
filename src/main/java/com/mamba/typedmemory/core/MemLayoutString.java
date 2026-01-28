@@ -154,7 +154,7 @@ public record MemLayoutString(MemoryLayout layout, String stringLayout) implemen
             case SequenceLayout seqLayout -> {
                 switch(seqLayout.name().isPresent() && seqLayout.elementLayout().name().isPresent()){
                     case true -> currentHandleName.push(firstLetterCapital(seqLayout.name().get())); //maybe group
-                    case false -> currentHandleName.push(seqLayout.name().get()); //maybe is @array(size = ...)int/primitive[] var
+                    case false -> currentHandleName.push(seqLayout.name().get()); //maybe is @array(value = ...)int/primitive[] var
                 }               
                 varNames(seqLayout.elementLayout(), handleNames, currentHandleName);   
                 currentHandleName.pop();

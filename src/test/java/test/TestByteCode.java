@@ -4,6 +4,7 @@
  */
 package test;
 
+import com.mamba.typedmemory.core.MemLayout;
 import test.emit.CodeEmitter;
 import java.lang.classfile.ClassFile;
 import static java.lang.classfile.ClassFile.ACC_FINAL;
@@ -22,6 +23,7 @@ import java.lang.foreign.ValueLayout;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import test.emit.OpEmitter;
+import test.ir.Expr;
 import test.ir.Op;
 import test.lowering.MemoryLayoutLowering;
 
@@ -38,7 +40,7 @@ public class TestByteCode {
                         ).withName("Point");
     
     void main() throws Exception{
-        
+        var memLayout = new MemLayout(layout);
         var classDesc = ClassDesc.of("test.StructType");
         var classBytes = ClassFile.of().build(classDesc, 
                 b -> b
@@ -48,15 +50,22 @@ public class TestByteCode {
                 .withMethodBody(CLASS_INIT_NAME, MethodTypeDesc.of(CD_void), ACC_STATIC, 
                         b0 -> {
                             //generate IR for layout
-                            var layoutExpr = MemoryLayoutLowering.ofExpr(layout);  
+                            var layoutExpr = MemoryLayoutLowering.ofExpr(memLayout);  
                             
                             //generate IR for assigning layout to static field and return
                             var put = new Op.PutStatic(classDesc, "layout", CD_MemoryLayout, layoutExpr);
-                            var ret = new Op.Return();
+                            
 
                             //generate whole opcode
-                            OpEmitter.emit(b0, put);
-                            OpEmitter.emit(b0, ret);
+                            OpEmitter.emit(b0, classDesc, put);
+                            
+                            var get = new Expr.BaseExpr.GetStatic("layout", CD_MemoryLayout);
+                            CodeEmitter.emit(b0, classDesc, get);
+                            
+                            var ret = new Op.Return();
+                            OpEmitter.emit(b0, classDesc, ret);
+                            
+                            
                         })
                 
                 .withMethodBody(INIT_NAME, MethodTypeDesc.of(CD_void), ACC_PUBLIC, 

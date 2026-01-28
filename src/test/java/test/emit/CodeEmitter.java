@@ -6,7 +6,9 @@ package test.emit;
 
 import test.ir.Expr;
 import java.lang.classfile.CodeBuilder;
+import java.lang.constant.ClassDesc;
 import test.ir.Expr.BaseExpr.GetStatic;
+import test.ir.Expr.BaseExpr.GetStaticExternal;
 import test.ir.Expr.BaseExpr.LongLiteral;
 import test.ir.Expr.BaseExpr.StringLiteral;
 import test.ir.Expr.CompositeExpr.ArrayLiteral;
@@ -17,9 +19,10 @@ import test.ir.Expr.CompositeExpr.Call;
  * @author joemw
  */
 public class CodeEmitter {
-    public static void emit(CodeBuilder b, Expr e) {
+    public static void emit(CodeBuilder b, ClassDesc currentClass, Expr e) {
         switch (e) {
-            case GetStatic f -> b.getstatic(f.owner(), f.name(), f.type());
+            case GetStatic f -> b.getstatic(currentClass, f.name(), f.type());
+            case GetStaticExternal g -> b.getstatic(g.owner(), g.name(), g.type());
             case StringLiteral s -> b.ldc(s.value());
             case ArrayLiteral a -> {
                 loadConst(b, a.elements().size());
@@ -27,13 +30,13 @@ public class CodeEmitter {
                 for (int i = 0; i < a.elements().size(); i++) {
                     b.dup();
                     loadConst(b, i);
-                    emit(b, a.elements().get(i));
+                    emit(b, currentClass, a.elements().get(i));
                     b.aastore();
                 }
             }
             case Call c -> {
                 for (Expr arg : c.args())
-                    emit(b, arg);                
+                    emit(b, currentClass, arg);                
                 switch (c.kind()) {
                     case STATIC -> b.invokestatic(c.owner(), c.name(), c.type());
                     case VIRTUAL -> b.invokevirtual(c.owner(), c.name(), c.type());

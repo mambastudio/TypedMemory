@@ -5,7 +5,9 @@
 package test;
 
 import java.lang.foreign.MemoryLayout;
+import java.lang.foreign.MemoryLayout.PathElement;
 import java.lang.foreign.ValueLayout;
+import java.lang.invoke.VarHandle;
 
 /**
  *
@@ -13,11 +15,8 @@ import java.lang.foreign.ValueLayout;
  */
 public class DummyStruct {
     private final static MemoryLayout layout = MemoryLayout.structLayout(
-                            ValueLayout.JAVA_BYTE.withName("x"),
-                            MemoryLayout.paddingLayout(3),
-                            ValueLayout.JAVA_INT.withName("y"),
-                            ValueLayout.JAVA_CHAR.withName("z"),
-                            MemoryLayout.paddingLayout(6),
-                            ValueLayout.JAVA_DOUBLE.withName("w")
-                        ).withName("Point");
+                                                    ValueLayout.JAVA_BYTE.withName("x")
+                                                ).withName("Point");
+    
+    private final static VarHandle xPointStructLayoutImplHandle = layout.varHandle(PathElement.groupElement("x"));
 }

@@ -4,6 +4,7 @@
  */
 package test.lowering;
 
+import com.mamba.typedmemory.core.MemLayout;
 import java.lang.constant.ClassDesc;
 import java.lang.constant.ConstantDescs;
 import static java.lang.constant.ConstantDescs.CD_String;
@@ -29,7 +30,11 @@ public class MemoryLayoutLowering {
     private static final ClassDesc CD_StructLayout         = ClassDesc.of("java.lang.foreign.StructLayout");
     private static final ClassDesc CD_ValueLayout          = ClassDesc.of("java.lang.foreign.ValueLayout");
     
-    public static Expr ofExpr(MemoryLayout memoryLayout) {
+    public static Expr ofExpr(MemLayout memoryLayout){
+        return ofExpr(memoryLayout.layout());
+    }
+    
+    private static Expr ofExpr(MemoryLayout memoryLayout) {
         return switch (memoryLayout) {
 
             /* ---------------- Group layouts ---------------- */
@@ -111,7 +116,7 @@ public class MemoryLayoutLowering {
 
             case ValueLayout value -> {
                 Expr base =
-                    new BaseExpr.GetStatic(
+                    new BaseExpr.GetStaticExternal(
                         CD_ValueLayout,
                         valueLayoutConstant(value),   // e.g. "JAVA_BYTE"
                         valueLayoutClassDesc(value)    
