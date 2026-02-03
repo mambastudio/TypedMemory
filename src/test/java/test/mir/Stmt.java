@@ -5,7 +5,9 @@
 package test.mir;
 
 import java.lang.constant.ClassDesc;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  *
@@ -13,10 +15,22 @@ import java.util.List;
  */
 public interface Stmt {
     record Block(List<Stmt> statements) implements Stmt {
+        public static Block clinit(Stmt... stmts) {
+            return new Block(
+                Stream.concat(
+                    Arrays.stream(stmts),
+                    Stream.of(new ReturnVoid()) //clinit has returnvoid always
+                ).toList()
+            );
+        }
+        
         @Override
         public void emit(CodeEmitter out) {
             for (Stmt s : statements) {
-                s.emit(out);
+                switch(s){ //flatten (notice it's recursive if it's a mixture of blocks)
+                    case Block b -> b.emit(out);
+                    case Stmt st -> st.emit(out); //adding interface makes it exhaustive
+                }
             }
         }
     }
