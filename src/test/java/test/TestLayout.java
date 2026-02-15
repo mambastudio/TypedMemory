@@ -18,8 +18,7 @@ public class TestLayout {
     }
     
     public void test1(){
-        record Pixel(int x, int y){}
-        record Point(byte x, int y, Pixel pixel){}        
+        record Point(int x, int y){}        
         
         MemLayout mL = MemLayout.of(Point.class);       
         MemLayoutString mLS = MemLayoutString.of(mL);

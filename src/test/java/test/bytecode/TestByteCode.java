@@ -2,16 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package test;
+package test.bytecode;
 
 import com.mamba.typedmemory.core.MemLayout;
-import test.emit.CodeEmitter;
 import java.lang.classfile.ClassFile;
 import static java.lang.classfile.ClassFile.ACC_FINAL;
 import static java.lang.classfile.ClassFile.ACC_PRIVATE;
 import static java.lang.classfile.ClassFile.ACC_PUBLIC;
 import static java.lang.classfile.ClassFile.ACC_STATIC;
-import java.lang.classfile.CodeBuilder;
 import java.lang.constant.ClassDesc;
 import static java.lang.constant.ConstantDescs.CD_Object;
 import static java.lang.constant.ConstantDescs.CD_void;
@@ -22,11 +20,6 @@ import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.ValueLayout;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import test.emit.OpEmitter;
-import test.ir.Expr;
-import test.ir.Op;
-import test.lowering.MemoryLayoutLowering;
-
 /**
  *
  * @author joemw

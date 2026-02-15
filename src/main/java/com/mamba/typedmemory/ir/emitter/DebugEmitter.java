@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package test.mir;
+package com.mamba.typedmemory.ir.emitter;
 
 import java.lang.constant.ClassDesc;
 import java.lang.constant.MethodTypeDesc;
@@ -61,7 +61,12 @@ public class DebugEmitter implements CodeEmitter{
     public void invokestatic(ClassDesc owner, String name, MethodTypeDesc methodDesc) {
         IO.println("invokestatic " + owner.descriptorString()+ " " +name+ " " +methodDesc.descriptorString());
     }
-
+    
+    @Override
+    public void invokespecial(ClassDesc owner, String name, MethodTypeDesc methodDesc) {
+        IO.println("invokespecial " + owner.descriptorString()+ " " +name+ " " +methodDesc.descriptorString());
+    }
+    
     @Override
     public void dup() {
         IO.println("dup");
@@ -69,12 +74,27 @@ public class DebugEmitter implements CodeEmitter{
 
     @Override
     public void anewarray(ClassDesc className) {
-        IO.println("anewarray " + className.descriptorString());
+        IO.println("anewarray " + className.arrayType().descriptorString());
     }
 
     @Override
     public void return_() {
         IO.println("return void");
     }
+
+    @Override
+    public void aload0() {
+        IO.println("aload0");
+    }
     
+    @Override
+    public void aload1() {
+        IO.println("aload1");
+    }
+
+    @Override
+    public void putfield(ClassDesc owner, String name, ClassDesc fieldType) {
+        IO.println("putfield " + owner.descriptorString()+ " " +name+ " " +fieldType.descriptorString());
+    }
+
 }

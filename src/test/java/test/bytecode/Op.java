@@ -1,4 +1,4 @@
-package test.ir;
+package test.bytecode;
 
 import java.lang.constant.ClassDesc;
 

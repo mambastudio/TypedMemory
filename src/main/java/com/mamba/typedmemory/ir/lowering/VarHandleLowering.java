@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package test.mir;
+package com.mamba.typedmemory.ir.lowering;
 
 import com.mamba.typedmemory.core.MemLayout;
 import com.mamba.typedmemory.core.MemLayoutString;
@@ -15,7 +15,11 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import test.mir.Stmt.Block;
+import com.mamba.typedmemory.ir.Expr;
+import com.mamba.typedmemory.ir.IRHelper;
+import com.mamba.typedmemory.ir.Stmt;
+import com.mamba.typedmemory.ir.Stmt.Block;
+import static java.lang.constant.ConstantDescs.CD_VarHandle;
 
 /**
  *
@@ -46,11 +50,11 @@ public class VarHandleLowering {
                                 new Expr.GetStaticExpr(
                                     owner,
                                     "layout",
-                                    Helper.CD_MemoryLayout
+                                    IRHelper.CD_MemoryLayout
                                 ),
                                 new Expr.ArrayExpr(
                                     new Expr.NewArrayExpr(
-                                        Helper.CD_PathElement,
+                                        IRHelper.CD_PathElement,
                                         fullPath.size()
                                     ),
                                     new Expr.ArrayInitExpr(fullPath)
@@ -62,7 +66,7 @@ public class VarHandleLowering {
                             out.add(new Stmt.PutStatic(
                                 owner,
                                 fieldName,
-                                Helper.CD_VarHandle,
+                                CD_VarHandle,
                                 vhExpr
                             ));
                         }

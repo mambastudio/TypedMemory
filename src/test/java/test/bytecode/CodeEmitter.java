@@ -2,17 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package test.emit;
+package test.bytecode;
 
-import test.ir.Expr;
 import java.lang.classfile.CodeBuilder;
 import java.lang.constant.ClassDesc;
-import test.ir.Expr.BaseExpr.GetStatic;
-import test.ir.Expr.BaseExpr.GetStaticExternal;
-import test.ir.Expr.BaseExpr.LongLiteral;
-import test.ir.Expr.BaseExpr.StringLiteral;
-import test.ir.Expr.CompositeExpr.ArrayLiteral;
-import test.ir.Expr.CompositeExpr.Call;
+import test.bytecode.Expr.BaseExpr.*;
+import test.bytecode.Expr.CompositeExpr.ArrayLiteral;
+import test.bytecode.Expr.CompositeExpr.Call;
+
 
 /**
  *

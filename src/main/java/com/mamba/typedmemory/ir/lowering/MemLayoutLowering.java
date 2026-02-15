@@ -2,34 +2,42 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package test.mir;
+package com.mamba.typedmemory.ir.lowering;
 
+import com.mamba.typedmemory.core.MemLayout;
+import java.lang.constant.ClassDesc;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.PaddingLayout;
 import java.lang.foreign.StructLayout;
 import java.lang.foreign.ValueLayout;
-import test.mir.Expr.ArrayInitExpr;
-import test.mir.Expr.NewArrayExpr;
-import static test.mir.Helper.CD_MemoryLayout;
-import static test.mir.Helper.valueLayoutConstant;
+import com.mamba.typedmemory.ir.Expr;
+import com.mamba.typedmemory.ir.Stmt;
+import static com.mamba.typedmemory.ir.IRHelper.CD_MemoryLayout;
+import static com.mamba.typedmemory.ir.IRHelper.valueLayoutConstant;
 
 /**
  *
  * @author joemw
  */
-public class MemLayoutExprBuilder implements ExprBuilder<MemoryLayout>{
-
-    @Override
-    public Expr build(MemoryLayout layout) {
+public class MemLayoutLowering {
+    public static Stmt lower(MemLayout layout, ClassDesc owner) {
+        return  new Stmt.PutStatic(
+                    owner,
+                    "layout",
+                    CD_MemoryLayout,
+                    build(layout.layout()));
+    }
+    
+    public static Expr build(MemoryLayout layout) {
         return switch (layout) {
             case StructLayout struct -> {
                 Expr base =
                     new Expr.StructLayoutExpr(
                         new Expr.ArrayExpr(
-                            new NewArrayExpr(CD_MemoryLayout, struct.memberLayouts().size()),
-                            new ArrayInitExpr(struct.memberLayouts()
+                            new Expr.NewArrayExpr(CD_MemoryLayout, struct.memberLayouts().size()),
+                            new Expr.ArrayInitExpr(struct.memberLayouts()
                                   .stream()
-                                  .map(this::build)
+                                  .map(MemLayoutLowering::build)
                                   .toList())
                         )
                     );
@@ -49,8 +57,14 @@ public class MemLayoutExprBuilder implements ExprBuilder<MemoryLayout>{
 
             case PaddingLayout padding ->
                 new Expr.PaddingLayoutExpr(padding.byteSize());
+                
+            //TODO: No sequence implemented in switch
+            /*
+            case SequenceLayout sequence ->
+                new Expr.SequenceLayoutExpr...
+            */
 
-            default ->
+            default -> 
                 throw new UnsupportedOperationException(
                     "Unsupported layout: " + layout
                 );

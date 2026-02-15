@@ -2,18 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package test.mir;
+package com.mamba.typedmemory.ir;
 
+import com.mamba.typedmemory.ir.emitter.CodeEmitter;
+import static com.mamba.typedmemory.ir.IRHelper.*;
 import java.lang.constant.ClassDesc;
 import static java.lang.constant.ConstantDescs.CD_String;
 import static java.lang.constant.ConstantDescs.CD_long;
+import static java.lang.constant.ConstantDescs.CD_VarHandle;
 import java.lang.constant.MethodTypeDesc;
 import java.util.List;
-import static test.mir.Helper.CD_MemoryLayout;
-import static test.mir.Helper.CD_PathElement;
-import static test.mir.Helper.CD_StructLayout;
-import static test.mir.Helper.CD_ValueLayout;
-import static test.mir.Helper.CD_VarHandle;
 
 /**
  *
@@ -26,7 +24,7 @@ public interface Expr {
         public void emit(CodeEmitter out) {
             target.emit(out);     // receiver first
             out.ldc(name);        // argument after
-            out.invokeinterface(CD_MemoryLayout, "withName", MethodTypeDesc.of(CD_String, CD_MemoryLayout));
+            out.invokeinterface(CD_MemoryLayout, "withName", MethodTypeDesc.of(CD_MemoryLayout, CD_String));
         }
     }
     
@@ -34,7 +32,7 @@ public interface Expr {
         @Override
         public void emit(CodeEmitter out) {
             layoutsArray.emit(out);
-            out.invokestatic(CD_MemoryLayout, "structLayout", MethodTypeDesc.of(CD_MemoryLayout, CD_StructLayout.arrayType()));
+            out.invokestatic(CD_MemoryLayout, "structLayout", MethodTypeDesc.of(CD_StructLayout, CD_MemoryLayout.arrayType()));
         }
     }
     

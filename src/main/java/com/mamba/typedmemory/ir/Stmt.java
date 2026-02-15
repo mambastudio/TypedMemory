@@ -2,11 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package test.mir;
+package com.mamba.typedmemory.ir;
 
+import com.mamba.typedmemory.ir.emitter.CodeEmitter;
 import java.lang.constant.ClassDesc;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -14,8 +16,8 @@ import java.util.stream.Stream;
  * @author joemw
  */
 public interface Stmt {
-    record Block(List<Stmt> statements) implements Stmt {
-        public static Block clinit(Stmt... stmts) {
+    public record Block(List<Stmt> statements) implements Stmt {
+        public static Block voidReturn(Stmt... stmts) {
             return new Block(
                 Stream.concat(
                     Arrays.stream(stmts),
@@ -35,7 +37,14 @@ public interface Stmt {
         }
     }
     
-    record PutStatic(ClassDesc owner, String fieldName, ClassDesc fieldDesc, Expr value) implements Stmt {
+    public record SimpleStmt(Consumer<CodeEmitter> body) implements Stmt {
+        @Override
+        public void emit(CodeEmitter out) {
+            body.accept(out);
+        }
+    }
+    
+   public record PutStatic(ClassDesc owner, String fieldName, ClassDesc fieldDesc, Expr value) implements Stmt {
         @Override
         public void emit(CodeEmitter out) {
             value.emit(out);              // push value
@@ -43,7 +52,7 @@ public interface Stmt {
         }
     }
     
-    record ReturnVoid() implements Stmt{
+   public record ReturnVoid() implements Stmt{
 
         @Override
         public void emit(CodeEmitter out) {

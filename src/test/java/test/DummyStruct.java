@@ -4,8 +4,10 @@
  */
 package test;
 
+import java.lang.foreign.Arena;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemoryLayout.PathElement;
+import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.VarHandle;
 
@@ -14,21 +16,31 @@ import java.lang.invoke.VarHandle;
  * @author joemw
  */
 public class DummyStruct {
-    private final static MemoryLayout layout = MemoryLayout.structLayout(
-                                                    ValueLayout.JAVA_BYTE.withName("x"),
-                                                    MemoryLayout.paddingLayout(3),
-                                                    ValueLayout.JAVA_INT.withName("y"),
-                                                    MemoryLayout.structLayout(
-                                                        ValueLayout.JAVA_INT.withName("x"),
-                                                        ValueLayout.JAVA_INT.withName("y")
-                                                    ).withName("pixel")
-                                                ).withName("Point");
-    
-
+    public record Point(int x, int y){}
+    private static final MemoryLayout layout = MemoryLayout.structLayout(
+                ValueLayout.JAVA_INT.withName("x"),
+                ValueLayout.JAVA_INT.withName("y")
+            ).withName("Point");
     
     public static final VarHandle xPointStructLayoutImplHandle = layout.varHandle(PathElement.groupElement("x"));
     public static final VarHandle yPointStructLayoutImplHandle = layout.varHandle(PathElement.groupElement("y"));
-    public static final VarHandle xPixelPointStructLayoutImplHandle = layout.varHandle(PathElement.groupElement("pixel"),PathElement.groupElement("x"));
-    public static final VarHandle yPixelPointStructLayoutImplHandle = layout.varHandle(PathElement.groupElement("pixel"),PathElement.groupElement("y"));
     
+    private final MemorySegment segment;
+    
+    public DummyStruct(MemorySegment segment){
+        this.segment = segment;
+    }
+    
+    public void set(Point t, long index){
+        xPointStructLayoutImplHandle.set(this.segment, 0, t.x());
+        yPointStructLayoutImplHandle.set(this.segment, 0, t.y());
+        
+      
+    }
+    
+    public Point get(long index){
+        int x = (int) xPointStructLayoutImplHandle.get(this.segment, 0);
+        int y = (int) yPointStructLayoutImplHandle.get(this.segment, 0);
+        return new Point(x, y);
+    }
 }

@@ -2,12 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package test.mir;
+package com.mamba.typedmemory.ir;
 
 import java.lang.constant.ClassDesc;
 import java.lang.foreign.AddressLayout;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemoryLayout.PathElement;
+import java.lang.foreign.MemorySegment;
 import java.lang.foreign.StructLayout;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.VarHandle;
@@ -16,12 +17,12 @@ import java.lang.invoke.VarHandle;
  *
  * @author joemw
  */
-public class Helper {
+public class IRHelper {
     public static final ClassDesc CD_MemoryLayout   = ClassDesc.of(MemoryLayout.class.getName());
+    public static final ClassDesc CD_MemorySegment  = ClassDesc.of(MemorySegment.class.getName());
     public static final ClassDesc CD_StructLayout   = ClassDesc.of(StructLayout.class.getName());
     public static final ClassDesc CD_ValueLayout    = ClassDesc.of(ValueLayout.class.getName());
     public static final ClassDesc CD_PathElement    = ClassDesc.of(PathElement.class.getName());
-    public static final ClassDesc CD_VarHandle      = ClassDesc.of(VarHandle.class.getName());
 
     
     public static String valueLayoutConstant(ValueLayout v) {
