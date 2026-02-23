@@ -4,4 +4,5 @@
  */
 
 module TypedMemory {
+    exports com.mamba.typedmemory.core;
 }

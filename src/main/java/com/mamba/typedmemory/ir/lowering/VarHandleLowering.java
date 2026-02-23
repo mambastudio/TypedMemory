@@ -28,7 +28,7 @@ import static java.lang.constant.ConstantDescs.CD_VarHandle;
 public class VarHandleLowering {
     public static Stmt lower(MemLayout memLayout, ClassDesc owner) {
         var stmts = new ArrayList<Stmt>();
-        var names = new ArrayDeque<>(MemLayoutString.of(memLayout).varNames());
+        var names = new ArrayDeque<>(MemLayoutString.of(memLayout).varHandleNames());
         collect(memLayout.layout(), names, new ArrayDeque<>(), owner, stmts);
         return new Block(stmts);
     }

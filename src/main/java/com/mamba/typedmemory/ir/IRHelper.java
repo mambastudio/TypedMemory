@@ -4,14 +4,9 @@
  */
 package com.mamba.typedmemory.ir;
 
-import java.lang.constant.ClassDesc;
-import java.lang.foreign.AddressLayout;
-import java.lang.foreign.MemoryLayout;
-import java.lang.foreign.MemoryLayout.PathElement;
-import java.lang.foreign.MemorySegment;
-import java.lang.foreign.StructLayout;
-import java.lang.foreign.ValueLayout;
-import java.lang.invoke.VarHandle;
+import module java.base;
+
+
 
 /**
  *
@@ -22,8 +17,29 @@ public class IRHelper {
     public static final ClassDesc CD_MemorySegment  = ClassDesc.of(MemorySegment.class.getName());
     public static final ClassDesc CD_StructLayout   = ClassDesc.of(StructLayout.class.getName());
     public static final ClassDesc CD_ValueLayout    = ClassDesc.of(ValueLayout.class.getName());
-    public static final ClassDesc CD_PathElement    = ClassDesc.of(PathElement.class.getName());
+    public static final ClassDesc CD_PathElement    = ClassDesc.of(MemoryLayout.PathElement.class.getName());
+    
+    public enum JVMType {
+        INT_LIKE,
+        LONG,
+        FLOAT,
+        DOUBLE,
+        REFERENCE
+    }
 
+    public record LocalInfo(int slot, JVMType type) {}
+    
+    public static JVMType classify(Class<?> classType) {
+        Objects.requireNonNull(classType);
+        return switch (classType) {
+            case Class<?> c when c == long.class   -> JVMType.LONG;
+            case Class<?> c when c == double.class -> JVMType.DOUBLE;
+            case Class<?> c when c == float.class  -> JVMType.FLOAT;
+            case Class<?> c when c.isPrimitive()   -> JVMType.INT_LIKE;
+            default -> JVMType.REFERENCE;
+        };
+    }
+    
     
     public static String valueLayoutConstant(ValueLayout v) {
         return switch (v) {
@@ -51,5 +67,30 @@ public class IRHelper {
             case ValueLayout.OfBoolean  _ -> ClassDesc.of("java.lang.foreign.ValueLayout$OfBoolean");
             case AddressLayout          _ -> ClassDesc.of("java.lang.foreign.AddressLayout");
         };
+    }
+    
+    public static int firstFreeSlot(boolean isStatic, Class<?>... parameterTypes) {
+        int slot = isStatic ? 0 : 1; // skip 'this' if instance
+
+        for (Class<?> p : parameterTypes) {
+            if (p == long.class || p == double.class) {
+                slot += 2;
+            } else {
+                slot += 1;
+            }
+        }
+
+        return slot;
+    }
+    
+    public static MethodTypeDesc constructorTypeDesc(Class<?> recordType) {
+
+        var components = recordType.getRecordComponents();
+        var paramDescs = new ClassDesc[components.length];
+
+        for (int i = 0; i < components.length; i++) 
+            paramDescs[i] = ClassDesc.ofDescriptor((components[i].getType().descriptorString()));
+
+        return MethodTypeDesc.of(ConstantDescs.CD_void, paramDescs);
     }
 }

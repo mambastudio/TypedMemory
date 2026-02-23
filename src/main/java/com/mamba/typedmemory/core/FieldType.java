@@ -35,6 +35,10 @@ public sealed interface FieldType extends MemAnalyser{
         public ValueLayout valueLayout(){
             return valueLayout(type);
         }
+        
+        public PrimitiveField asName(String name){
+            return new PrimitiveField(name, type);
+        }
     }
     public record RecordField(String name, Class<? extends Record> type) implements FieldType{    
         

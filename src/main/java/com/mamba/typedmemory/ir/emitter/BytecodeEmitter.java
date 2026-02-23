@@ -5,6 +5,7 @@
 package com.mamba.typedmemory.ir.emitter;
 
 import java.lang.classfile.CodeBuilder;
+import java.lang.classfile.TypeKind;
 import java.lang.constant.ClassDesc;
 import java.lang.constant.MethodTypeDesc;
 
@@ -22,16 +23,6 @@ public class BytecodeEmitter implements CodeEmitter{
     @Override
     public void iconst(int v) {
         this.iconst(builder, v);
-    }
-
-    @Override
-    public void aload0() {
-        builder.aload(0);
-    }
-
-    @Override
-    public void aload1() {
-        builder.aload(1);
     }
 
     @Override
@@ -125,5 +116,49 @@ public class BytecodeEmitter implements CodeEmitter{
             }
         }
     }
-    
+
+    @Override
+    public void new_(ClassDesc className) {
+        builder.new_(className);
+    }
+
+    @Override
+    public void iload(int slot) {
+        builder.iload(slot);
+    }
+
+    @Override
+    public void lload(int slot) {
+        builder.lload(slot);
+    }
+
+    @Override
+    public void fload(int slot) {
+        builder.fload(slot);
+    }
+
+    @Override
+    public void dload(int slot) {
+        builder.dload(slot);
+    }
+
+    @Override
+    public void aload(int slot) {
+        builder.aload(slot);
+    }    
+
+    @Override
+    public void getfield(ClassDesc owner, String name, ClassDesc type) {
+        builder.getfield(owner, name, type);
+    }
+
+    @Override
+    public void invokevirtual(ClassDesc owner, String name, MethodTypeDesc methodDesc) {
+        builder.invokevirtual(owner, name, methodDesc);
+    }
+
+    @Override
+    public void storeLocal(TypeKind tk, int slot) {
+        builder.storeLocal(tk, slot);
+    }
 }

@@ -75,7 +75,7 @@ public record MemLayoutString(MemoryLayout layout, String stringLayout) implemen
     
     public List<String> varHandleFields(){
         List<String> varFields = new ArrayList();
-        varHandleFields(layout, new ArrayDeque(varNames()), new ArrayDeque(), varFields);
+        varHandleFields(layout, new ArrayDeque(varHandleNames()), new ArrayDeque(), varFields);
         return varFields;
     }
     
@@ -129,26 +129,26 @@ public record MemLayoutString(MemoryLayout layout, String stringLayout) implemen
         }
     }
     
-    public Deque<String> varNamesDeque(){
-        return new ArrayDeque(varNames());
+    public Deque<String> varHandleNamesDeque(){
+        return new ArrayDeque(varHandleNames());
     }
     
-    public List<String> varNames() {
+    public List<String> varHandleNames() {
         List<String> handleNames = new LinkedList<>();
         Deque<String> currentHandleName = new LinkedList<>();
         currentHandleName.push("Handle");
         currentHandleName.push(layout.getClass().getSimpleName());
-        varNames(layout, handleNames, currentHandleName);
+        varHandleNames(layout, handleNames, currentHandleName);
         return handleNames;
     }
     
-    private void varNames(MemoryLayout memoryLayout, List<String> handleNames, Deque<String> currentHandleName) {        
+    private void varHandleNames(MemoryLayout memoryLayout, List<String> handleNames, Deque<String> currentHandleName) {        
         switch (memoryLayout) {
             case GroupLayout group -> {   
                 if(group.name().isPresent())
                     currentHandleName.push(firstLetterCapital(group.name().get()));
                 for (MemoryLayout mem : group.memberLayouts()) 
-                    varNames(mem, handleNames, currentHandleName);         
+                    varHandleNames(mem, handleNames, currentHandleName);         
                 currentHandleName.pop();
             }
             case SequenceLayout seqLayout -> {
@@ -156,7 +156,7 @@ public record MemLayoutString(MemoryLayout layout, String stringLayout) implemen
                     case true -> currentHandleName.push(firstLetterCapital(seqLayout.name().get())); //maybe group
                     case false -> currentHandleName.push(seqLayout.name().get()); //maybe is @array(value = ...)int/primitive[] var
                 }               
-                varNames(seqLayout.elementLayout(), handleNames, currentHandleName);   
+                varHandleNames(seqLayout.elementLayout(), handleNames, currentHandleName);   
                 currentHandleName.pop();
             }
             case ValueLayout valueLayout -> {

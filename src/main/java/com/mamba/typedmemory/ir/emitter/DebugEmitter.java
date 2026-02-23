@@ -4,6 +4,7 @@
  */
 package com.mamba.typedmemory.ir.emitter;
 
+import java.lang.classfile.TypeKind;
 import java.lang.constant.ClassDesc;
 import java.lang.constant.MethodTypeDesc;
 
@@ -83,18 +84,53 @@ public class DebugEmitter implements CodeEmitter{
     }
 
     @Override
-    public void aload0() {
-        IO.println("aload0");
-    }
-    
-    @Override
-    public void aload1() {
-        IO.println("aload1");
+    public void putfield(ClassDesc owner, String name, ClassDesc fieldType) {
+        IO.println("putfield " + owner.descriptorString()+ " " +name+ " " +fieldType.descriptorString());
     }
 
     @Override
-    public void putfield(ClassDesc owner, String name, ClassDesc fieldType) {
-        IO.println("putfield " + owner.descriptorString()+ " " +name+ " " +fieldType.descriptorString());
+    public void new_(ClassDesc className) {
+        IO.println("new " +className.descriptorString());
+    }
+
+    @Override
+    public void iload(int slot) {
+        IO.println("iload " +slot);
+    }
+
+    @Override
+    public void lload(int slot) {
+        IO.println("lload " +slot);
+    }
+
+    @Override
+    public void fload(int slot) {
+        IO.println("fload " +slot);
+    }
+
+    @Override
+    public void dload(int slot) {
+        IO.println("dload " +slot);
+    }
+
+    @Override
+    public void aload(int slot) {
+        IO.println("aload " +slot);
+    }    
+
+    @Override
+    public void getfield(ClassDesc owner, String name, ClassDesc type) {
+        IO.println("getfield " + owner.descriptorString()+ " " +name+ " " +type.descriptorString());
+    }
+
+    @Override
+    public void invokevirtual(ClassDesc owner, String name, MethodTypeDesc methodDesc) {
+        IO.println("invokevirtual " + owner.descriptorString()+ " " +name+ " " +methodDesc.descriptorString());
+    }
+
+    @Override
+    public void storeLocal(TypeKind tk, int slot) {
+        IO.println("store local " +tk+ " slot " +slot);
     }
 
 }

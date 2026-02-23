@@ -54,17 +54,17 @@ public class TestIR {
                     b.withFlags(0);
                     b.withField("segment", CD_MemorySegment, ACC_PRIVATE | ACC_FINAL);      
                     b.withField("layout", CD_MemoryLayout, ACC_PRIVATE | ACC_STATIC | ACC_FINAL);                    
-                    for(var name : memLayoutString.varNames())
+                    for(var name : memLayoutString.varHandleNames())
                         b.withField(name, CD_VarHandle, ACC_PRIVATE | ACC_STATIC | ACC_FINAL); //initialise static fields
                     
                     b.withMethodBody(INIT_NAME, MethodTypeDesc.of(CD_void, CD_MemorySegment), ACC_PUBLIC, 
                         b0 -> {
                             var init = Block.voidReturn(
                                     new SimpleStmt(cb ->{
-                                        cb.aload0();
+                                        cb.aload(0);
                                         cb.invokespecial(ConstantDescs.CD_Object, INIT_NAME, MethodTypeDesc.of(ConstantDescs.CD_void));
-                                        cb.aload0();                            
-                                        cb.aload1();
+                                        cb.aload(0);                            
+                                        cb.aload(1);
                                         cb.putfield(owner, "segment", IRHelper.CD_MemorySegment);
                                     }));
                             init.emit(new BytecodeEmitter(b0));
@@ -107,10 +107,10 @@ public class TestIR {
         
         var init = Block.voidReturn(
                         new SimpleStmt(b0 ->{
-                            b0.aload0();
+                            b0.aload(0);
                             b0.invokespecial(ConstantDescs.CD_Object, "<init>", MethodTypeDesc.of(ConstantDescs.CD_void));
-                            b0.aload0();                            
-                            b0.aload1();
+                            b0.aload(0);                            
+                            b0.aload(1);
                             b0.putfield(owner, "segment", IRHelper.CD_MemorySegment);
                         }));
                 

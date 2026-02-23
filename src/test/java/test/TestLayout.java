@@ -23,7 +23,7 @@ public class TestLayout {
         MemLayout mL = MemLayout.of(Point.class);       
         MemLayoutString mLS = MemLayoutString.of(mL);
         IO.println(mL);
-        IO.println(mLS.varNames());
+        IO.println(mLS.varHandleNames());
         mLS.varHandleFields().forEach(string -> IO.println(string));
     }
     
@@ -33,6 +33,6 @@ public class TestLayout {
         MemLayout mL = MemLayout.of(Point.class);       
         MemLayoutString mLS = MemLayoutString.of(mL);
         IO.println(mL);
-        IO.println(mLS.varNames());
+        IO.println(mLS.varHandleNames());
     }
 }
