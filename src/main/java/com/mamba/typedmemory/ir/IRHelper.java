@@ -4,6 +4,8 @@
  */
 package com.mamba.typedmemory.ir;
 
+import com.mamba.typedmemory.ir.emitter.CodeEmitter;
+
 import module java.base;
 
 
@@ -40,6 +42,25 @@ public class IRHelper {
         };
     }
     
+    public static void emitLoad(CodeEmitter out, JVMType type, int slot) {
+        switch (type) {
+            case INT_LIKE -> out.iload(slot);
+            case LONG     -> out.lload(slot);
+            case FLOAT    -> out.fload(slot);
+            case DOUBLE   -> out.dload(slot);
+            case REFERENCE-> out.aload(slot);
+        }
+    }
+    
+    public static void emitStore(CodeEmitter out, JVMType type, int slot) {
+        switch (type) {
+            case INT_LIKE -> out.storeLocal(TypeKind.INT, slot);
+            case LONG     -> out.storeLocal(TypeKind.LONG, slot);
+            case FLOAT    -> out.storeLocal(TypeKind.FLOAT, slot);
+            case DOUBLE   -> out.storeLocal(TypeKind.DOUBLE, slot);
+            case REFERENCE-> out.storeLocal(TypeKind.REFERENCE, slot);
+        }
+    }
     
     public static String valueLayoutConstant(ValueLayout v) {
         return switch (v) {

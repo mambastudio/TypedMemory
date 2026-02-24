@@ -4,15 +4,10 @@
  */
 package com.mamba.typedmemory.ir.lowering;
 
-import com.mamba.typedmemory.core.FieldType;
-import com.mamba.typedmemory.core.FieldType.ArrayField;
-import com.mamba.typedmemory.core.FieldType.PrimitiveField;
-import com.mamba.typedmemory.core.FieldType.RecordField;
 import com.mamba.typedmemory.core.MemLayout;
 import com.mamba.typedmemory.core.MemLayoutString;
+import com.mamba.typedmemory.ir.IRHelper;
 import static com.mamba.typedmemory.ir.IRHelper.CD_MemorySegment;
-import com.mamba.typedmemory.ir.IRHelper.JVMType;
-import static com.mamba.typedmemory.ir.IRHelper.JVMType.REFERENCE;
 import com.mamba.typedmemory.ir.IRHelper.LocalInfo;
 import static com.mamba.typedmemory.ir.IRHelper.classify;
 import static com.mamba.typedmemory.ir.IRHelper.constructorTypeDesc;
@@ -47,14 +42,17 @@ public class RecordGetLowering {
 
         for (RecordVarHandlePlan plan : plans) {
             //Load value via VarHandle
-            stmts.add(loadPrimitive(owner, plan, segmentSlot, indexSlot));
+            stmts.add(emitVarHandleFieldGet(owner, plan, segmentSlot, indexSlot));
             
             // Allocate local
             int slot = slots.allocate(plan.actualType());
             locals.add(new LocalInfo(slot, plan.jvmType()));
 
             // Store into local
-            stmts.add(storePrimitive(slot, plan.jvmType()));
+            stmts.add(
+                    new Stmt.SimpleStmt(out -> {
+                        IRHelper.emitStore(out, plan.jvmType(), slot);
+                    }));
         }
         
         //Construct record from locals
@@ -70,43 +68,24 @@ public class RecordGetLowering {
             out.new_(desc);
             out.dup();
             
-            for (LocalInfo local : localSlots) {               
-                switch (local.type()) {
-                    case INT_LIKE -> out.iload(local.slot());
-                    case LONG -> out.lload(local.slot());
-                    case FLOAT -> out.fload(local.slot());
-                    case DOUBLE -> out.dload(local.slot());
-                    case REFERENCE -> out.aload(local.slot());
-                }
-            }
-            
+            for (LocalInfo local : localSlots)               
+                IRHelper.emitLoad(out, local.type(), local.slot());
+                        
             out.invokespecial(desc, INIT_NAME, constructorTypeDesc(recordType));
         });
     }
-        
-    private Stmt storePrimitive(int slot, JVMType type) {
-        return new Stmt.SimpleStmt(out -> {
-            switch (type) {
-                case INT_LIKE -> out.storeLocal(TypeKind.INT, slot);
-                case LONG -> out.storeLocal(TypeKind.LONG, slot);
-                case FLOAT -> out.storeLocal(TypeKind.FLOAT, slot);
-                case DOUBLE -> out.storeLocal(TypeKind.DOUBLE, slot);
-                default -> throw new IllegalStateException();
-            }
-        });
-    }
-    
-    private Stmt loadPrimitive(ClassDesc owner, RecordVarHandlePlan field, int segmentSlot, int indexSlot) {
+                    
+    private Stmt emitVarHandleFieldGet(ClassDesc owner, RecordVarHandlePlan field, int segmentSlot, int indexSlot) {
         //Comments below are for reminding what happens in case I need to rewrite
         return new Stmt.SimpleStmt(out -> {
             //Load static VarHandle field
             out.getstatic(owner, field.varHandleFieldName(), CD_VarHandle);
             
             //Load segment (this.segment)
-            out.aload(segmentSlot);  // usually 0
+            out.aload(segmentSlot);  // actually 0, because it is 'this'
             out.getfield(owner, "segment", CD_MemorySegment);
             
-            //Load index (long)
+            //Load index (long), the first parameter of method get, hence index slot is 1
             out.lload(indexSlot);
             
             //Invoke VarHandle.get            
@@ -114,7 +93,7 @@ public class RecordGetLowering {
         });
     }
     
-    public List<RecordVarHandlePlan> buildPlans(Class<? extends Record> recordType, MemLayout memLayout) {
+    private List<RecordVarHandlePlan> buildPlans(Class<? extends Record> recordType, MemLayout memLayout) {
         var memLayoutString = MemLayoutString.of(memLayout);  
         
         var varHandleNames = memLayoutString.varHandleNames(); //list of varhandles

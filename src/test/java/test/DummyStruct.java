@@ -32,15 +32,15 @@ public class DummyStruct {
     }
     
     public void set(Point t, long index){
-        xPointStructLayoutImplHandle.set(this.segment, 0, t.x());
-        yPointStructLayoutImplHandle.set(this.segment, 0, t.y());
+        xPointStructLayoutImplHandle.set(this.segment, index, t.x());
+        yPointStructLayoutImplHandle.set(this.segment, index, t.y());
         
       
     }
     
     public Point get(long index){
-        int x = (int) xPointStructLayoutImplHandle.get(this.segment, 0);
-        int y = (int) yPointStructLayoutImplHandle.get(this.segment, 0);
+        int x = (int) xPointStructLayoutImplHandle.get(this.segment, index);
+        int y = (int) yPointStructLayoutImplHandle.get(this.segment, index);
         return new Point(x, y);
     }
 }

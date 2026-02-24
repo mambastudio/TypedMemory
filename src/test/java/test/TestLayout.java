@@ -7,6 +7,8 @@ package test;
 import com.mamba.typedmemory.core.MemLayout;
 import com.mamba.typedmemory.core.MemLayoutString;
 import com.mamba.typedmemory.annotation.size;
+import com.mamba.typedmemory.ir.emitter.DebugEmitter;
+import com.mamba.typedmemory.ir.lowering.RecordGetLowering;
 
 /**
  *
@@ -14,7 +16,7 @@ import com.mamba.typedmemory.annotation.size;
  */
 public class TestLayout {
     void main(){
-        test1();
+        test3();
     }
     
     public void test1(){
@@ -34,5 +36,13 @@ public class TestLayout {
         MemLayoutString mLS = MemLayoutString.of(mL);
         IO.println(mL);
         IO.println(mLS.varHandleNames());
+    }
+    
+    public void test3(){
+        record Point(int x, int y){}
+        MemLayout mL = MemLayout.of(Point.class);
+        var recordLower = new RecordGetLowering();
+        var stmt = recordLower.reconstructRecord(Point.class, mL);
+        stmt.emit(new DebugEmitter());
     }
 }

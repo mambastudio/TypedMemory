@@ -7,7 +7,6 @@ package com.mamba.typedmemory.core;
 import com.mamba.typedmemory.core.Mem.MemCache;
 import java.lang.foreign.Arena;
 import java.lang.invoke.MethodHandle;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,18 +19,41 @@ public interface Mem<T> {
     public T get(long index);
     public long address();
     
-    public static <T> Mem<T> of(Class<T> clazz, Arena arena, long size){
-        if(MemCache.of().containsKey(clazz)){
+    public static <T extends Record> Mem<T> of(Class<T> clazz, Arena arena, long size){
+        if(!MemCache.of().containsKey(clazz)){
             if(clazz.isRecord()){
-                var mem = MemLayout.of((Class<? extends Record>) clazz);
+                var mem = MemLayout.of(clazz);
                 var segment = arena.allocate(mem.layout(), size);
             }
         }
-        else if(clazz.isInterface() && clazz.isSealed()){
+        else{
+            
+        }
+        
+        throw new UnsupportedOperationException("Should be record");
+    }
+    
+    public static <T> Mem<T> union(Class<T> clazz, Arena arena, long size){
+        if(!MemCache.of().containsKey(clazz)){
+            if(clazz.isInterface() && clazz.isSealed() && areAllPermittedRecords(clazz.getPermittedSubclasses())){
+               
+            }
+            else
+                throw new UnsupportedOperationException("Should be record or sealed interface");
+        }
+        else{
             
         }
         
         throw new UnsupportedOperationException("Should be record or sealed interface");
+    }
+    
+    private static boolean areAllPermittedRecords(Class<?>[] clazz){
+        for(Class<?> permittedClazz : clazz){
+            if(!permittedClazz.isRecord())
+                return false;
+        }
+        return true;
     }
     
     final class MemCache {
