@@ -114,4 +114,21 @@ public class IRHelper {
 
         return MethodTypeDesc.of(ConstantDescs.CD_void, paramDescs);
     }
+    
+    public static ClassDesc generateHiddenImplName(MethodHandles.Lookup lookup, Class<?> valueType) {
+        var pkg = lookup.lookupClass().getPackageName();
+        var internalPkg = pkg.replace('.', '/');
+
+        var simple =
+            "Mem$" + valueType.getSimpleName()
+            + "_Impl_"
+            + Long.toHexString(System.nanoTime());
+
+        var internalName =
+            internalPkg.isEmpty()
+                ? simple
+                : internalPkg + "/" + simple;
+
+        return ClassDesc.ofInternalName(internalName);
+    }
 }

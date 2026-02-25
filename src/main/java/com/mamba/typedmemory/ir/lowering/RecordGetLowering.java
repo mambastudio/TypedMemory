@@ -28,8 +28,7 @@ import static java.lang.constant.ConstantDescs.INIT_NAME;
  */
 public class RecordGetLowering {
     
-    public Stmt reconstructRecord(Class<? extends Record> recordType, MemLayout memLayout){
-        var owner = ClassDesc.ofDescriptor(recordType.descriptorString());
+    public Stmt reconstructRecord(ClassDesc owner, Class<? extends Record> recordType, MemLayout memLayout){
         
         var plans = buildPlans(recordType, memLayout);
         
