@@ -131,4 +131,18 @@ public class IRHelper {
 
         return ClassDesc.ofInternalName(internalName);
     }
+
+    public static Stmt emitConstructorCall(Class<?> type, List<LocalInfo> args) {    
+        return new Stmt.SimpleStmt(out -> {
+                        var desc = ClassDesc.of(type.getName());
+                
+                        out.new_(desc);
+                        out.dup();
+                
+                        for (LocalInfo local : args)
+                            emitLoad(out, local.type(), local.slot());
+                
+                        out.invokespecial(desc, INIT_NAME, constructorTypeDesc(type));
+        });
+    }
 }
