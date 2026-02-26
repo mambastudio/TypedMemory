@@ -104,7 +104,7 @@ public class IRHelper {
         return slot;
     }
     
-    public static MethodTypeDesc constructorTypeDesc(Class<?> recordType) {
+    public static MethodTypeDesc constructorRecordTypeDesc(Class<? extends Record> recordType) {
 
         var components = recordType.getRecordComponents();
         var paramDescs = new ClassDesc[components.length];
@@ -132,7 +132,8 @@ public class IRHelper {
         return ClassDesc.ofInternalName(internalName);
     }
 
-    public static Stmt emitConstructorCall(Class<?> type, List<LocalInfo> args) {    
+    //opcode for instantiating a record "new RecordType(t1..., tn);"
+    public static Stmt emitRecordConstructorCall(Class<? extends Record> type, List<LocalInfo> args) {    
         return new Stmt.SimpleStmt(out -> {
                         var desc = ClassDesc.of(type.getName());
                 
@@ -142,7 +143,7 @@ public class IRHelper {
                         for (LocalInfo local : args)
                             emitLoad(out, local.type(), local.slot());
                 
-                        out.invokespecial(desc, INIT_NAME, constructorTypeDesc(type));
+                        out.invokespecial(desc, INIT_NAME, constructorRecordTypeDesc(type));
         });
     }
 }
