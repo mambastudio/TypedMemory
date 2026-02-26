@@ -1,10 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mamba.typedmemory.ir;
 
 import com.mamba.typedmemory.ir.emitter.CodeEmitter;
+import static java.lang.constant.ConstantDescs.INIT_NAME;
 
 import module java.base;
 

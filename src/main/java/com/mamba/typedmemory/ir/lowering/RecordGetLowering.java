@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mamba.typedmemory.ir.lowering;
 
 import com.mamba.typedmemory.core.MemLayout;
@@ -10,7 +6,6 @@ import com.mamba.typedmemory.ir.IRHelper;
 import static com.mamba.typedmemory.ir.IRHelper.CD_MemorySegment;
 import com.mamba.typedmemory.ir.IRHelper.LocalInfo;
 import static com.mamba.typedmemory.ir.IRHelper.classify;
-import static com.mamba.typedmemory.ir.IRHelper.constructorTypeDesc;
 import static com.mamba.typedmemory.ir.IRHelper.firstFreeSlot;
 import com.mamba.typedmemory.ir.LocalSlotAllocator;
 import com.mamba.typedmemory.ir.RecordVarHandlePlan;
@@ -20,7 +15,6 @@ import static java.lang.constant.ConstantDescs.CD_VarHandle;
 import static java.lang.constant.ConstantDescs.CD_long;
 
 import module java.base;
-import static java.lang.constant.ConstantDescs.INIT_NAME;
 
 /**
  *
@@ -30,6 +24,7 @@ public class RecordGetLowering {
     
     public Stmt reconstructRecord(ClassDesc owner, Class<? extends Record> recordType, MemLayout memLayout){
         
+        //create record build plan which has metainfo on components, varhandlename, return type, get method description for varhandle
         var plans = buildPlans(recordType, memLayout);
         
         var slots = new LocalSlotAllocator(firstFreeSlot(false, long.class));
@@ -40,7 +35,7 @@ public class RecordGetLowering {
         var indexSlot   = 1; // long parameter
 
         for (RecordVarHandlePlan plan : plans) {
-            //Load value via VarHandle
+            //Load value via VarHandle using meta info from plan
             stmts.add(emitVarHandleFieldGet(owner, plan, segmentSlot, indexSlot));
             
             // Allocate local
@@ -55,25 +50,33 @@ public class RecordGetLowering {
         }
         
         //Construct record from locals
-        stmts.add(constructRecord(recordType, locals));
+        stmts.add(IRHelper.emitRecordConstructorCall(recordType, locals));
 
         return new Stmt.Block(stmts);
     }
-            
-    private Stmt constructRecord(Class<?> recordType, List<LocalInfo> localSlots){
-        return new Stmt.SimpleStmt(out -> {
-            var desc = ClassDesc.of(recordType.getName());
-             
-            out.new_(desc);
-            out.dup();
-            
-            for (LocalInfo local : localSlots)               
-                IRHelper.emitLoad(out, local.type(), local.slot());
-                        
-            out.invokespecial(desc, INIT_NAME, constructorTypeDesc(recordType));
-        });
+    
+    private List<RecordVarHandlePlan> buildPlans(Class<? extends Record> recordType, MemLayout memLayout) {
+        var memLayoutString = MemLayoutString.of(memLayout);  
+        
+        var varHandleNames = memLayoutString.varHandleNames(); //list of varhandles
+        var components = recordType.getRecordComponents();  //list of record components
+
+        var plans = new ArrayList<RecordVarHandlePlan>(); //init plans for varhandles
+
+        for (int i = 0; i < components.length; i++) {
+            var component = components[i];
+            var vhName = varHandleNames.get(i);
+
+            var jvmType = classify(component.getType()); //for return type of varhandle.get(...) - custom grouping (in enum)
+            var returnDesc = ClassDesc.ofDescriptor(component.getType().descriptorString()); ////for return type of varhandle.get(...)
+
+            var vhType = MethodTypeDesc.of(returnDesc, CD_MemorySegment, CD_long); //method type for varhandle.get containing parameters and return type          
+            plans.add(new RecordVarHandlePlan(component, vhName, jvmType, vhType));
+        }
+
+        return plans;
     }
-                    
+                                
     private Stmt emitVarHandleFieldGet(ClassDesc owner, RecordVarHandlePlan field, int segmentSlot, int indexSlot) {
         //Comments below are for reminding what happens in case I need to rewrite
         return new Stmt.SimpleStmt(out -> {
@@ -90,27 +93,5 @@ public class RecordGetLowering {
             //Invoke VarHandle.get            
             out.invokevirtual(CD_VarHandle, "get", field.vhType());
         });
-    }
-    
-    private List<RecordVarHandlePlan> buildPlans(Class<? extends Record> recordType, MemLayout memLayout) {
-        var memLayoutString = MemLayoutString.of(memLayout);  
-        
-        var varHandleNames = memLayoutString.varHandleNames(); //list of varhandles
-        var components = recordType.getRecordComponents();  //list of record components
-
-        var plans = new ArrayList<RecordVarHandlePlan>(); //init plans for varhandles
-
-        for (int i = 0; i < components.length; i++) {
-            var component = components[i];
-            var vhName = varHandleNames.get(i);
-
-            var jvmType = classify(component.getType());
-            var returnDesc = ClassDesc.ofDescriptor(component.getType().descriptorString());
-
-            var vhType = MethodTypeDesc.of(returnDesc, CD_MemorySegment, CD_long); // or CD_int depending on coordinate           
-            plans.add(new RecordVarHandlePlan(component, vhName, jvmType, vhType));
-        }
-
-        return plans;
     }
 }
