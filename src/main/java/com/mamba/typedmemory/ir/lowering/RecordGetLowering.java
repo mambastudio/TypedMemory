@@ -32,7 +32,7 @@ public class RecordGetLowering {
         var stmts = new ArrayList<Stmt>();
         
         var segmentSlot = 0; // instance method: this
-        var indexSlot   = 1; // long parameter
+        var indexSlot   = 1; // long parameter of method get in owner ClassDesc
 
         for (RecordVarHandlePlan plan : plans) {
             //Load value via VarHandle using meta info from plan

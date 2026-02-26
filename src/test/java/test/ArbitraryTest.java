@@ -13,7 +13,8 @@ import java.util.Objects;
 public class ArbitraryTest {
     void main(){
         
-        test(char.class);
+        char[] array = new char[10];
+        IO.println(array.getClass().getName());
     }
     
     void test(Class classType){       
