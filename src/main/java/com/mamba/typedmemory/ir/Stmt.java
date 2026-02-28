@@ -26,6 +26,15 @@ public interface Stmt {
             );
         }
         
+        public static Block RefReturn(Stmt... stmts) {
+            return new Block(
+                Stream.concat(
+                    Arrays.stream(stmts),
+                    Stream.of(new ReturnRef()) //clinit has returnvoid always
+                ).toList()
+            );
+        }
+        
         @Override
         public void emit(CodeEmitter out) {
             for (Stmt s : statements) {
@@ -57,6 +66,15 @@ public interface Stmt {
         @Override
         public void emit(CodeEmitter out) {
             out.return_();
+        }
+        
+    }
+   
+   public record ReturnRef() implements Stmt{
+
+        @Override
+        public void emit(CodeEmitter out) {
+            out.areturn();
         }
         
     }

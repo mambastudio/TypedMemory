@@ -161,4 +161,14 @@ public class BytecodeEmitter implements CodeEmitter{
     public void storeLocal(TypeKind tk, int slot) {
         builder.storeLocal(tk, slot);
     }
+
+    @Override
+    public void areturn() {
+        builder.areturn();
+    }
+
+    @Override
+    public void invokestatic(ClassDesc owner, String name, MethodTypeDesc methodDesc, boolean isInterface) {
+        builder.invokestatic(owner, name, methodDesc, isInterface);
+    }
 }

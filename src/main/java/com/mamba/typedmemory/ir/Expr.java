@@ -11,6 +11,7 @@ import static java.lang.constant.ConstantDescs.CD_String;
 import static java.lang.constant.ConstantDescs.CD_long;
 import static java.lang.constant.ConstantDescs.CD_VarHandle;
 import java.lang.constant.MethodTypeDesc;
+import java.lang.foreign.ValueLayout;
 import java.util.List;
 
 /**
@@ -19,12 +20,12 @@ import java.util.List;
  */
 public interface Expr {
            
-    record WithNameExpr(Expr target, String name) implements Expr {
+    record WithNameExpr(Expr target, String name, ClassDesc receiverType) implements Expr {
         @Override
         public void emit(CodeEmitter out) {
             target.emit(out);     // receiver first
             out.ldc(name);        // argument after
-            out.invokeinterface(CD_MemoryLayout, "withName", MethodTypeDesc.of(CD_MemoryLayout, CD_String));
+            out.invokeinterface(receiverType, "withName", MethodTypeDesc.of(receiverType, CD_String));
         }
     }
     
@@ -32,7 +33,7 @@ public interface Expr {
         @Override
         public void emit(CodeEmitter out) {
             layoutsArray.emit(out);
-            out.invokestatic(CD_MemoryLayout, "structLayout", MethodTypeDesc.of(CD_StructLayout, CD_MemoryLayout.arrayType()));
+            out.invokestatic(CD_MemoryLayout, "structLayout", MethodTypeDesc.of(CD_StructLayout, CD_MemoryLayout.arrayType()), true);
         }
     }
     
@@ -57,7 +58,7 @@ public interface Expr {
             @Override
             public void emit(CodeEmitter out) {
                 out.ldc(name);
-                out.invokestatic(CD_PathElement, "groupElement", MethodTypeDesc.of(CD_PathElement, CD_String));
+                out.invokestatic(CD_PathElement, "groupElement", MethodTypeDesc.of(CD_PathElement, CD_String), true);
             }
         }
         
@@ -103,10 +104,17 @@ public interface Expr {
         }     
     }
         
-    record ValueLayoutExpr(String valueLayoutField) implements Expr {
+    record ValueLayoutExpr(ValueLayout layout) implements Expr {
         @Override
         public void emit(CodeEmitter out) {
-            out.getstatic(CD_ValueLayout, valueLayoutField, CD_ValueLayout);
+            String fieldName = IRHelper.valueLayoutConstant(layout);
+            ClassDesc fieldDesc = IRHelper.valueLayoutClassDesc(layout);
+
+            out.getstatic(
+                IRHelper.CD_ValueLayout,
+                fieldName,
+                fieldDesc
+            );
         }
     }
     

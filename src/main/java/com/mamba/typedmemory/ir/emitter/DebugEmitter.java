@@ -52,7 +52,7 @@ public class DebugEmitter implements CodeEmitter{
     public void getstatic(ClassDesc owner, String name, ClassDesc type) {
         IO.println("getstatic " + owner.descriptorString()+ " " +name+ " " +type.descriptorString());
     }
-
+    
     @Override
     public void invokeinterface(ClassDesc owner, String name, MethodTypeDesc methodDesc) {
         IO.println("invokeinterface " + owner.descriptorString()+ " " +name+ " " +methodDesc.descriptorString());
@@ -61,6 +61,11 @@ public class DebugEmitter implements CodeEmitter{
     @Override
     public void invokestatic(ClassDesc owner, String name, MethodTypeDesc methodDesc) {
         IO.println("invokestatic " + owner.descriptorString()+ " " +name+ " " +methodDesc.descriptorString());
+    }
+        
+    @Override
+    public void invokestatic(ClassDesc owner, String name, MethodTypeDesc methodDesc, boolean isInterface) {
+        IO.println("invokestatic " + owner.descriptorString()+ " " +name+ " " +methodDesc.descriptorString()+ " " +isInterface);
     }
     
     @Override
@@ -133,4 +138,8 @@ public class DebugEmitter implements CodeEmitter{
         IO.println("store local " +tk+ " slot " +slot);
     }
 
+    @Override
+    public void areturn() {
+        IO.println("areturn");
+    }
 }

@@ -11,6 +11,7 @@ import java.lang.foreign.PaddingLayout;
 import java.lang.foreign.StructLayout;
 import java.lang.foreign.ValueLayout;
 import com.mamba.typedmemory.ir.Expr;
+import com.mamba.typedmemory.ir.IRHelper;
 import com.mamba.typedmemory.ir.Stmt;
 import static com.mamba.typedmemory.ir.IRHelper.CD_MemoryLayout;
 import static com.mamba.typedmemory.ir.IRHelper.valueLayoutConstant;
@@ -43,15 +44,15 @@ public class MemLayoutLowering {
                     );
 
                 yield struct.name()
-                            .<Expr>map(n -> new Expr.WithNameExpr(base, n))
+                            .<Expr>map(n -> new Expr.WithNameExpr(base, n, ClassDesc.ofDescriptor(StructLayout.class.descriptorString())))
                             .orElse(base);
             }
 
             case ValueLayout value ->{
-                Expr base = new Expr.ValueLayoutExpr(valueLayoutConstant(value));
+                Expr base = new Expr.ValueLayoutExpr(value);
                 
                 yield value.name()
-                           .<Expr>map(n -> new Expr.WithNameExpr(base, n))
+                           .<Expr>map(n -> new Expr.WithNameExpr(base, n, IRHelper.valueLayoutClassDesc(value)))
                            .orElse(base);
             }
 

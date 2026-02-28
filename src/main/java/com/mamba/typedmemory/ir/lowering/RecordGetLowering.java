@@ -22,7 +22,7 @@ import module java.base;
  */
 public class RecordGetLowering {
     
-    public Stmt reconstructRecord(ClassDesc owner, Class<? extends Record> recordType, MemLayout memLayout){
+    public Stmt emitGet(ClassDesc owner, Class<? extends Record> recordType, MemLayout memLayout){
         
         //create record build plan which has metainfo on components, varhandlename, return type, get method description for varhandle
         var plans = buildPlans(recordType, memLayout);

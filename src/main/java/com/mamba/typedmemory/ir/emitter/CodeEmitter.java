@@ -29,6 +29,7 @@ public interface CodeEmitter {
     public void getstatic(ClassDesc owner, String name, ClassDesc type);
     public void invokeinterface(ClassDesc owner, String name, MethodTypeDesc methodDesc);
     public void invokestatic(ClassDesc owner, String name, MethodTypeDesc methodDesc);
+    public void invokestatic(ClassDesc owner, String name, MethodTypeDesc methodDesc, boolean isInterface);
     public void invokespecial(ClassDesc owner, String name, MethodTypeDesc methodDesc);
     public void invokevirtual(ClassDesc owner, String name, MethodTypeDesc methodDesc);
     public void putfield(ClassDesc owner, String name, ClassDesc fieldType);
@@ -36,5 +37,6 @@ public interface CodeEmitter {
     public void dup();
     public void anewarray(ClassDesc className);
     public void return_();
+    public void areturn();
     public void new_(ClassDesc className);
 }

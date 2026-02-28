@@ -9,6 +9,7 @@ import com.mamba.typedmemory.core.MemLayoutString;
 import com.mamba.typedmemory.annotation.size;
 import com.mamba.typedmemory.ir.emitter.DebugEmitter;
 import com.mamba.typedmemory.ir.lowering.RecordGetLowering;
+import com.mamba.typedmemory.ir.lowering.RecordSetLowering;
 import java.lang.constant.ClassDesc;
 
 /**
@@ -42,8 +43,8 @@ public class TestLayout {
     public void test3(){
         record Point(int x, int y){}
         MemLayout mL = MemLayout.of(Point.class);
-        var recordLower = new RecordGetLowering();
-        var stmt = recordLower.reconstructRecord(ClassDesc.ofDescriptor(TestLayout.class.descriptorString()),Point.class, mL);
+        var recordLower = new RecordSetLowering();
+        var stmt = recordLower.emitSet(ClassDesc.ofDescriptor(TestLayout.class.descriptorString()),Point.class, mL);
         stmt.emit(new DebugEmitter());
     }
 }
