@@ -90,6 +90,10 @@ public class RecordGetLowering {
             //Load index (long), the first parameter of method get, hence index slot is 1
             out.lload(indexSlot);
             
+            //The multiply STRIDE part
+            out.getstatic(owner, "STRIDE", CD_long);
+            out.lmul();
+            
             //Invoke VarHandle.get            
             out.invokevirtual(CD_VarHandle, "get", field.vhType());
         });

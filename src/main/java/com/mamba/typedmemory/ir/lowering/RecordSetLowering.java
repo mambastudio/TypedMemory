@@ -53,6 +53,10 @@ public class RecordSetLowering {
 
             // load index
             out.lload(indexSlot);
+                        
+            //The multiply STRIDE part
+            out.getstatic(owner, "STRIDE", CD_long);
+            out.lmul();
 
             // load record param
             out.aload(recordSlot);

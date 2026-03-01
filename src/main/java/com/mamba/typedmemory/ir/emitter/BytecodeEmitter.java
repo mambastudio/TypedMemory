@@ -171,4 +171,9 @@ public class BytecodeEmitter implements CodeEmitter{
     public void invokestatic(ClassDesc owner, String name, MethodTypeDesc methodDesc, boolean isInterface) {
         builder.invokestatic(owner, name, methodDesc, isInterface);
     }
+    
+    @Override
+    public void lmul(){
+        builder.lmul();
+    }
 }

@@ -39,13 +39,25 @@ public class TestIR {
         
         
         try (Arena arena = Arena.ofConfined()) {
-            long size = 10_000_000;
-            Random random = new Random();
-            Mem<Point> points = Mem.of(Point.class, arena, size);
+            long size = 10;
+            record Color(float r, float g, float b){}
+            
+            Mem<Color> colors = Mem.of(Color.class, arena, size);
+            
             for(int i = 0; i<size; i++){
-                points.set(new Point(random.nextInt(), random.nextInt()), i);
-                
+                Random random = new Random();
+                colors.set(
+                        new Color(
+                                random.nextFloat(0, 1),
+                                random.nextFloat(0, 1), 
+                                random.nextFloat(0, 1)), 
+                        i);
             }
+            
+            for(int i = 0; i<size; i++){
+                IO.println(colors.get(i));
+            }
+            
         }
         
     }

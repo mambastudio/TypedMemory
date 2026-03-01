@@ -25,6 +25,8 @@ public class DummyStruct {
     public static final VarHandle xPointStructLayoutImplHandle = layout.varHandle(PathElement.groupElement("x"));
     public static final VarHandle yPointStructLayoutImplHandle = layout.varHandle(PathElement.groupElement("y"));
     
+    public static final long STRIDE = layout.byteSize();
+    
     private final MemorySegment segment;
     
     public DummyStruct(MemorySegment segment){
@@ -32,15 +34,15 @@ public class DummyStruct {
     }
     
     public void set(Point t, long index){
-        xPointStructLayoutImplHandle.set(this.segment, index, t.x());
-        yPointStructLayoutImplHandle.set(this.segment, index, t.y());
+        xPointStructLayoutImplHandle.set(this.segment, index * STRIDE, t.x());
+        yPointStructLayoutImplHandle.set(this.segment, index * STRIDE, t.y());
         
       
     }
     
     public Point get(long index){
-        int x = (int) xPointStructLayoutImplHandle.get(this.segment, index);
-        int y = (int) yPointStructLayoutImplHandle.get(this.segment, index);
+        int x = (int) xPointStructLayoutImplHandle.get(this.segment, index * STRIDE);
+        int y = (int) yPointStructLayoutImplHandle.get(this.segment, index * STRIDE);
         return new Point(x, y);
     }
 }

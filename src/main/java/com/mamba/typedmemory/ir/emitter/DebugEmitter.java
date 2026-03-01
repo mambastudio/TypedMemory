@@ -142,4 +142,9 @@ public class DebugEmitter implements CodeEmitter{
     public void areturn() {
         IO.println("areturn");
     }
+
+    @Override
+    public void lmul() {
+        IO.println("lmul");
+    }
 }

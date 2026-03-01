@@ -24,6 +24,7 @@ public interface CodeEmitter {
     public void iastore();
     public void ldc(String s);
     public void ldc2(long l);
+    public void lmul();
     public void getfield(ClassDesc owner, String name, ClassDesc type);
     public void putstatic(ClassDesc owner, String name, ClassDesc type);
     public void getstatic(ClassDesc owner, String name, ClassDesc type);

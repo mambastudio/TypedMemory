@@ -51,7 +51,7 @@ public interface Mem<T> {
             }
 
             //var memLayout = MemLayout.of(clazz);
-            var segment = arena.allocate(memLayout.layout(), memLayout.layout().byteSize() * size);
+            var segment = arena.allocate(memLayout.layout(), size);
 
             return (Mem<T>) ctor.invoke(segment);
 

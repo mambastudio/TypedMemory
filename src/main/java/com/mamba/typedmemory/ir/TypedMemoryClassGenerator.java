@@ -44,7 +44,8 @@ public class TypedMemoryClassGenerator {
                 b.withFlags(0);
                 b.withInterfaceSymbols(ClassDesc.ofDescriptor(Mem.class.descriptorString()));
                 b.withField("segment", CD_MemorySegment, ACC_PRIVATE | ACC_FINAL);      
-                b.withField("layout", CD_MemoryLayout, ACC_PRIVATE | ACC_STATIC | ACC_FINAL);                    
+                b.withField("layout", CD_MemoryLayout, ACC_PRIVATE | ACC_STATIC | ACC_FINAL);   
+                b.withField("STRIDE", CD_long, ACC_PRIVATE | ACC_STATIC | ACC_FINAL);   
                 for(var name : memLayoutString.varHandleNames())
                     b.withField(name, CD_VarHandle, ACC_PRIVATE | ACC_STATIC | ACC_FINAL); //initialise static fields
                     
@@ -65,9 +66,15 @@ public class TypedMemoryClassGenerator {
                 
                 b.withMethodBody(CLASS_INIT_NAME, MethodTypeDesc.of(CD_void), ACC_STATIC, 
                     b0 -> {
+                        var STRIDE_ASSIGN = new Stmt.SimpleStmt(cb ->{
+                            cb.getstatic(owner, "layout", CD_MemoryLayout);
+                            cb.invokeinterface(CD_MemoryLayout, "byteSize", MethodTypeDesc.of(ConstantDescs.CD_long));
+                            cb.putstatic(owner, "STRIDE", ConstantDescs.CD_long);
+                        });
                         var clinit = Stmt.Block.voidReturn(
                             MemLayoutLowering.lower(memLayout, owner),
-                            VarHandleLowering.lower(memLayout, owner)
+                            VarHandleLowering.lower(memLayout, owner),
+                            STRIDE_ASSIGN
                         );
                         clinit.emit(new BytecodeEmitter(b0));
                     }
