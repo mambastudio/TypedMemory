@@ -4,12 +4,16 @@ Typed Memory is a Java library for working with strongly-typed views over off-he
 The idea is to access structural data ergonomically as follows:
 
 ~~~java
-record Point(int x, int y) {}
+record Color(float r, float g, float b, float a) {
+    Color(float r, float g, float b){
+        this(r, g, b, 1);
+    }
+}
 
 void main(){
     try (Arena arena = Arena.ofConfined()) {
-        Mem<Point> points = Mem.of(Point.class, arena, 10);
-        points.set(0, new Point(10, 20));
+        Mem<Color> colors = Mem.of(Color.class, arena, 10);
+        colors.set(0, new Color(0.5f, 0.5f, 0.5f));
     }
 }
 ~~~
@@ -79,3 +83,11 @@ try (Arena arena = Arena.ofConfined()) {
 ~~~
 
 Point is treated as a value description. Memory layout is derived from the record type (due to having transparent state description). No Java objects are allocated per element. Access is bounds-checked and type-checked.
+
+## Features
+The following are features currently implemented:
+* [x] Records with primitives as fields
+* [ ] Inner records
+* [ ] Arrays as fields
+* [ ] Unions
+
