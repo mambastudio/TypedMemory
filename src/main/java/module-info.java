@@ -3,6 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/module-info.java to edit this template
  */
 
-module TypedMemory {
+module com.mamba.typedmemory {
     exports com.mamba.typedmemory.core;
 }
