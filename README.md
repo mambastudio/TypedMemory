@@ -81,9 +81,6 @@ try (Arena arena = Arena.ofConfined()) {
     //Point(var x, var y) = points.get(0); //Once java gets pattern assignment https://mail.openjdk.org/pipermail/amber-spec-experts/2026-January/004306.html
 }
 ~~~
-
-Point is treated as a value description. Memory layout is derived from the record type (due to having transparent state description). No Java objects are allocated per element. Access is bounds-checked and type-checked.
-
 ## Features
 The following are features currently implemented:
 * [x] Records with primitives as fields
