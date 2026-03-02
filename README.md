@@ -1,7 +1,7 @@
 # TypedMemory
 Typed Memory is a Java library for working with strongly-typed views over off-heap memory, built on top of the Java Foreign Function & Memory (FFM) API. It lets you describe value-oriented data structures using Java types (records for now), while controlling layout, lifetime, and allocation scope explicitly, without giving up safety or readability.
 
-The idea is to access structural data ergonomically as follows:
+The idea is to access native/offheap structural data ergonomically as follows:
 
 ~~~java
 record Color(float r, float g, float b, float a) {
@@ -88,6 +88,6 @@ Point is treated as a value description. Memory layout is derived from the recor
 The following are features currently implemented:
 * [x] Records with primitives as fields
 * [ ] Inner records
-* [ ] Arrays as fields
+* [ ] Records with arrays as fields
 * [ ] Unions
 
