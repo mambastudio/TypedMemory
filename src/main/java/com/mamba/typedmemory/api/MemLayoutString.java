@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Record.java to edit this template
  */
-package com.mamba.typedmemory.core;
+package com.mamba.typedmemory.api;
 
 import java.lang.foreign.GroupLayout;
 import java.lang.foreign.MemoryLayout;
@@ -18,12 +18,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import com.mamba.typedmemory.internal.layout.LayoutRules;
 
 /**
  *
  * @author user
  */
-public record MemLayoutString(MemoryLayout layout, String stringLayout) implements MemAnalyser{
+public record MemLayoutString(MemoryLayout layout, String stringLayout) implements LayoutRules{
     
     public static MemLayoutString of(MemLayout memoryLayout) {
         return of(memoryLayout.layout(), 0);

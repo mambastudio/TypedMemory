@@ -4,13 +4,8 @@
  */
 package test;
 
-import com.mamba.typedmemory.core.Mem;
-import com.mamba.typedmemory.core.MemLayout;
-import com.mamba.typedmemory.ir.TypedMemoryClassGenerator;
-import java.lang.constant.ClassDesc;
+import com.mamba.typedmemory.api.Mem;
 import java.lang.foreign.Arena;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Random;
 
 /**
@@ -18,26 +13,12 @@ import java.util.Random;
  * @author joemw
  */
 public class TestIR {
-    record Point(int x, int y) {}
     void main() throws Exception{
-        test2();
+        test();
        
     }
-    
-    void test1() throws Exception{
         
-        var memLayout = MemLayout.of(Point.class);         
-        var owner = ClassDesc.of("test.StructType");
-        var classBytes = TypedMemoryClassGenerator.generate(owner, Point.class, memLayout);
-        
-        var testClassesRoot = Path.of("target/test-classes");
-        writeClass(owner, classBytes, testClassesRoot);
-    }
-    
-    
-    void test2(){
-        
-        
+    void test(){    
         try (Arena arena = Arena.ofConfined()) {
             long size = 10;
             record Color(float r, float g, float b){}
@@ -45,32 +26,19 @@ public class TestIR {
             Mem<Color> colors = Mem.of(Color.class, arena, size);
             
             for(int i = 0; i<size; i++){
-                Random random = new Random();
-                colors.set(
-                        new Color(
+                Random random = new Random();                
+                colors.set(i, new Color(
                                 random.nextFloat(0, 1),
                                 random.nextFloat(0, 1), 
-                                random.nextFloat(0, 1)), 
-                        i);
+                                random.nextFloat(0, 1)));              
             }
             
             for(int i = 0; i<size; i++){
                 IO.println(colors.get(i));
             }
             
+            IO.println(colors.segment());
         }
         
-    }
-    
-    void writeClass(ClassDesc classDesc, byte[] classBytes, Path classesRoot)
-        throws Exception {
-               
-        var pkg = classDesc.packageName();
-        var dir = pkg.isEmpty()
-                ? classesRoot
-                : classesRoot.resolve(pkg.replace('.', '/'));
-
-        var path = dir.resolve(classDesc.displayName() + ".class");
-        Files.write(path, classBytes);
-    }
+    }    
 }

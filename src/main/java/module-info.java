@@ -4,5 +4,5 @@
  */
 
 module com.mamba.typedmemory {
-    exports com.mamba.typedmemory.core;
+    exports com.mamba.typedmemory.api;
 }

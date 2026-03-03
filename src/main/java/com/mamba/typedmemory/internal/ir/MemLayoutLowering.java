@@ -2,19 +2,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mamba.typedmemory.ir.lowering;
+package com.mamba.typedmemory.internal.ir;
 
-import com.mamba.typedmemory.core.MemLayout;
+import com.mamba.typedmemory.api.MemLayout;
 import java.lang.constant.ClassDesc;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.PaddingLayout;
 import java.lang.foreign.StructLayout;
 import java.lang.foreign.ValueLayout;
-import com.mamba.typedmemory.ir.Expr;
-import com.mamba.typedmemory.ir.IRHelper;
-import com.mamba.typedmemory.ir.Stmt;
-import static com.mamba.typedmemory.ir.IRHelper.CD_MemoryLayout;
-import static com.mamba.typedmemory.ir.IRHelper.valueLayoutConstant;
+import com.mamba.typedmemory.internal.ir.Expr;
+import com.mamba.typedmemory.internal.ir.IRHelper;
+import com.mamba.typedmemory.internal.ir.Stmt;
+import static com.mamba.typedmemory.internal.ir.IRHelper.CD_MemoryLayout;
+import static com.mamba.typedmemory.internal.ir.IRHelper.valueLayoutConstant;
 
 /**
  *

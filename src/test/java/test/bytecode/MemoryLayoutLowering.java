@@ -4,7 +4,7 @@
  */
 package test.bytecode;
 
-import com.mamba.typedmemory.core.MemLayout;
+import com.mamba.typedmemory.api.MemLayout;
 import java.lang.constant.ClassDesc;
 import java.lang.constant.ConstantDescs;
 import static java.lang.constant.ConstantDescs.CD_String;

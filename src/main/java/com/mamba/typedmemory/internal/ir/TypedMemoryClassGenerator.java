@@ -2,18 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mamba.typedmemory.ir;
+package com.mamba.typedmemory.internal.ir;
 
-import com.mamba.typedmemory.core.Mem;
-import com.mamba.typedmemory.core.MemLayout;
-import com.mamba.typedmemory.core.MemLayoutString;
-import static com.mamba.typedmemory.ir.IRHelper.CD_MemoryLayout;
-import static com.mamba.typedmemory.ir.IRHelper.CD_MemorySegment;
-import com.mamba.typedmemory.ir.emitter.BytecodeEmitter;
-import com.mamba.typedmemory.ir.lowering.MemLayoutLowering;
-import com.mamba.typedmemory.ir.lowering.RecordGetLowering;
-import com.mamba.typedmemory.ir.lowering.RecordSetLowering;
-import com.mamba.typedmemory.ir.lowering.VarHandleLowering;
+import com.mamba.typedmemory.api.Mem;
+import com.mamba.typedmemory.api.MemLayout;
+import com.mamba.typedmemory.api.MemLayoutString;
+import static com.mamba.typedmemory.internal.ir.IRHelper.CD_MemoryLayout;
+import static com.mamba.typedmemory.internal.ir.IRHelper.CD_MemorySegment;
+import com.mamba.typedmemory.internal.emitter.BytecodeEmitter;
 import java.lang.classfile.ClassFile;
 import static java.lang.classfile.ClassFile.ACC_BRIDGE;
 import static java.lang.classfile.ClassFile.ACC_FINAL;
@@ -29,7 +25,6 @@ import static java.lang.constant.ConstantDescs.CD_void;
 import static java.lang.constant.ConstantDescs.CLASS_INIT_NAME;
 import static java.lang.constant.ConstantDescs.INIT_NAME;
 import java.lang.constant.MethodTypeDesc;
-import java.lang.invoke.MethodHandles;
 
 /**
  *
@@ -99,7 +94,7 @@ public class TypedMemoryClassGenerator {
                     }
                 );
                 
-                b.withMethodBody("set", MethodTypeDesc.of(CD_void, recordDesc, CD_long), ACC_PUBLIC | ACC_FINAL, 
+                b.withMethodBody("set", MethodTypeDesc.of(CD_void, CD_long, recordDesc), ACC_PUBLIC | ACC_FINAL, 
                     b0 ->{
                         var set = Stmt.Block.voidReturn(
                                 new RecordSetLowering().emitSet(owner, record, memLayout)
@@ -108,15 +103,32 @@ public class TypedMemoryClassGenerator {
                     }
                 );
                 
-                b.withMethodBody("set", MethodTypeDesc.of(CD_void, ConstantDescs.CD_Object, CD_long), ACC_PUBLIC | ACC_BRIDGE | ACC_SYNTHETIC,
+                b.withMethodBody("set", MethodTypeDesc.of(CD_void, CD_long, ConstantDescs.CD_Object), ACC_PUBLIC | ACC_BRIDGE | ACC_SYNTHETIC,
+                    cb -> {
+                        cb.aload(0);                // this
+                        cb.lload(1);                // long index
+                        cb.aload(3);                // Object obj
+                        cb.checkcast(recordDesc);   // cast to record type
+                        cb.invokevirtual(owner, "set",
+                            MethodTypeDesc.of(CD_void, CD_long, recordDesc));
+                        cb.return_();
+                    }
+                );
+                
+                b.withMethodBody("segment", MethodTypeDesc.of(IRHelper.CD_MemorySegment), ACC_PUBLIC | ACC_FINAL,
                     cb -> {
                         cb.aload(0);
-                        cb.aload(1);
-                        cb.checkcast(recordDesc);
-                        cb.lload(2);
-                        cb.invokevirtual(owner, "set",
-                            MethodTypeDesc.of(CD_void, recordDesc, CD_long));
-                        cb.return_();
+                        cb.getfield(owner, "segment", IRHelper.CD_MemorySegment);
+                        cb.areturn();
+                    }
+                );
+                
+                b.withMethodBody("address", MethodTypeDesc.of(CD_long), ACC_PUBLIC | ACC_FINAL,
+                    cb -> {
+                        cb.aload(0);
+                        cb.invokevirtual(owner, "segment", MethodTypeDesc.of(IRHelper.CD_MemorySegment));
+                        cb.invokeinterface(IRHelper.CD_MemorySegment, "address", MethodTypeDesc.of(CD_long));
+                        cb.lreturn();
                     }
                 );
             }

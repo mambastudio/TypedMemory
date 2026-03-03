@@ -2,14 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mamba.typedmemory.ir.lowering;
+package com.mamba.typedmemory.internal.ir;
 
-import com.mamba.typedmemory.core.MemLayout;
-import com.mamba.typedmemory.core.MemLayoutString;
-import static com.mamba.typedmemory.ir.IRHelper.CD_MemorySegment;
-import static com.mamba.typedmemory.ir.IRHelper.classify;
-import com.mamba.typedmemory.ir.RecordVarHandlePlan;
-import com.mamba.typedmemory.ir.Stmt;
+import com.mamba.typedmemory.api.MemLayout;
+import com.mamba.typedmemory.api.MemLayoutString;
+import static com.mamba.typedmemory.internal.ir.IRHelper.CD_MemorySegment;
+import static com.mamba.typedmemory.internal.ir.IRHelper.classify;
+import com.mamba.typedmemory.internal.ir.RecordVarHandlePlan;
+import com.mamba.typedmemory.internal.ir.Stmt;
 import java.lang.constant.ClassDesc;
 import static java.lang.constant.ConstantDescs.CD_VarHandle;
 import static java.lang.constant.ConstantDescs.CD_long;
@@ -28,11 +28,14 @@ public class RecordSetLowering {
         var plans = buildPlans(recordType, memLayout);
 
         var stmts = new ArrayList<Stmt>();
+        
+        int slot = 0;
 
-        int segmentSlot = 0; // this
-        int recordSlot  = 1; // parameter t
-        int indexSlot   = 2; // long index
-
+        int segmentSlot = slot++;          // this
+        int indexSlot = slot;              // long index
+        slot += 2;                         // long consumes 2
+        int recordSlot = slot;             // parameter t
+       
         for (RecordVarHandlePlan plan : plans) 
             stmts.add(emitVarHandleFieldSet(owner, recordType, plan, segmentSlot, recordSlot, indexSlot));
 

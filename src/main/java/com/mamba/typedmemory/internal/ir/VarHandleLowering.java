@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mamba.typedmemory.ir.lowering;
+package com.mamba.typedmemory.internal.ir;
 
-import com.mamba.typedmemory.core.MemLayout;
-import com.mamba.typedmemory.core.MemLayoutString;
+import com.mamba.typedmemory.api.MemLayout;
+import com.mamba.typedmemory.api.MemLayoutString;
 import java.lang.constant.ClassDesc;
 import java.lang.foreign.GroupLayout;
 import java.lang.foreign.MemoryLayout;
@@ -15,10 +15,10 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import com.mamba.typedmemory.ir.Expr;
-import com.mamba.typedmemory.ir.IRHelper;
-import com.mamba.typedmemory.ir.Stmt;
-import com.mamba.typedmemory.ir.Stmt.Block;
+import com.mamba.typedmemory.internal.ir.Expr;
+import com.mamba.typedmemory.internal.ir.IRHelper;
+import com.mamba.typedmemory.internal.ir.Stmt;
+import com.mamba.typedmemory.internal.ir.Stmt.Block;
 import static java.lang.constant.ConstantDescs.CD_VarHandle;
 
 /**

@@ -4,12 +4,11 @@
  */
 package test;
 
-import com.mamba.typedmemory.core.MemLayout;
-import com.mamba.typedmemory.core.MemLayoutString;
-import com.mamba.typedmemory.annotation.size;
-import com.mamba.typedmemory.ir.emitter.DebugEmitter;
-import com.mamba.typedmemory.ir.lowering.RecordGetLowering;
-import com.mamba.typedmemory.ir.lowering.RecordSetLowering;
+import com.mamba.typedmemory.api.MemLayout;
+import com.mamba.typedmemory.api.MemLayoutString;
+import com.mamba.typedmemory.api.size;
+import com.mamba.typedmemory.internal.emitter.DebugEmitter;
+import com.mamba.typedmemory.internal.ir.RecordSetLowering;
 import java.lang.constant.ClassDesc;
 
 /**

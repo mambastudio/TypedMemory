@@ -1,4 +1,4 @@
-package com.mamba.typedmemory.core;
+package com.mamba.typedmemory.internal.layout;
 
 import java.util.Objects;
 import java.lang.foreign.*;
@@ -7,7 +7,7 @@ import java.lang.foreign.*;
  *
  * @author user
  */
-public interface MemAnalyser {
+public interface LayoutRules {
     
     public static long computeAlignmentOffset(long offset, long align) {
         return switch(align){

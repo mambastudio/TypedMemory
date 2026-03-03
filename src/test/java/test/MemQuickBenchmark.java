@@ -8,7 +8,7 @@ package test;
  *
  * @author joemw
  */
-import com.mamba.typedmemory.core.Mem;
+import com.mamba.typedmemory.api.Mem;
 import java.lang.foreign.*;
 import java.lang.invoke.VarHandle;
 
@@ -104,7 +104,7 @@ public class MemQuickBenchmark {
             for (int r = 0; r < LOOPS; r++) {
                 for (int i = 0; i < SIZE; i++) {
                     Point p = new Point(i, i);
-                    mem.set(p, i);
+                    mem.set(i, p);
                 }
             }
 

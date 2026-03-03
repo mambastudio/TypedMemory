@@ -2,13 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Record.java to edit this template
  */
-package com.mamba.typedmemory.core;
+package com.mamba.typedmemory.api;
 
-import com.mamba.typedmemory.core.FieldType.ArrayField;
-import com.mamba.typedmemory.core.FieldType.MemSize;
-import com.mamba.typedmemory.core.FieldType.PrimitiveField;
-import com.mamba.typedmemory.core.FieldType.RecordField;
-import static com.mamba.typedmemory.core.MemAnalyser.computeAlignmentOffset;
+import com.mamba.typedmemory.internal.layout.FieldType;
+import com.mamba.typedmemory.internal.layout.FieldType.ArrayField;
+import com.mamba.typedmemory.internal.layout.FieldType.MemSize;
+import com.mamba.typedmemory.internal.layout.FieldType.PrimitiveField;
+import com.mamba.typedmemory.internal.layout.FieldType.RecordField;
+import static com.mamba.typedmemory.internal.layout.LayoutRules.computeAlignmentOffset;
 import java.lang.foreign.GroupLayout;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.SequenceLayout;
@@ -19,12 +20,13 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import com.mamba.typedmemory.internal.layout.LayoutRules;
 
 /**
  *
  * @author user
  */
-public record MemLayout(MemoryLayout layout, Optional<List<MemoryLayout>> groupLayouts) implements MemAnalyser{
+public record MemLayout(MemoryLayout layout, Optional<List<MemoryLayout>> groupLayouts) implements LayoutRules{
     public MemLayout{
         Objects.requireNonNull(layout);
         Objects.requireNonNull(groupLayouts);

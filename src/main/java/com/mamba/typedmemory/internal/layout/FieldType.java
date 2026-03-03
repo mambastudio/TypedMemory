@@ -2,21 +2,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Record.java to edit this template
  */
-package com.mamba.typedmemory.core;
+package com.mamba.typedmemory.internal.layout;
 
 /**
  *
  * @author user
  */
-import static com.mamba.typedmemory.core.MemAnalyser.computeAlignmentOffset;
+import static com.mamba.typedmemory.internal.layout.LayoutRules.computeAlignmentOffset;
 import java.lang.foreign.ValueLayout;
 import java.lang.reflect.RecordComponent;
 import java.util.Optional;
-import com.mamba.typedmemory.annotation.size;
+import com.mamba.typedmemory.api.size;
 
-public sealed interface FieldType extends MemAnalyser{
+public sealed interface FieldType extends LayoutRules{
     
-    public record MemSize(long endOffset, long size) implements MemAnalyser{
+    public record MemSize(long endOffset, long size) implements LayoutRules{
         public MemSize(){this(0, 0);}
         public MemSize(long size){this(size, size);}
 

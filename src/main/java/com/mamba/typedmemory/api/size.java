@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/AnnotationType.java to edit this template
  */
-package com.mamba.typedmemory.annotation;
+package com.mamba.typedmemory.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

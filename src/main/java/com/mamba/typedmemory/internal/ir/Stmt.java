@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package com.mamba.typedmemory.ir;
+package com.mamba.typedmemory.internal.ir;
 
-import com.mamba.typedmemory.ir.emitter.CodeEmitter;
+import com.mamba.typedmemory.internal.emitter.CodeEmitter;
 import java.lang.constant.ClassDesc;
 import java.util.Arrays;
 import java.util.List;

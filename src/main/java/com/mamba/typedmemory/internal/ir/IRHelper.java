@@ -1,6 +1,6 @@
-package com.mamba.typedmemory.ir;
+package com.mamba.typedmemory.internal.ir;
 
-import com.mamba.typedmemory.ir.emitter.CodeEmitter;
+import com.mamba.typedmemory.internal.emitter.CodeEmitter;
 import static java.lang.constant.ConstantDescs.INIT_NAME;
 
 import module java.base;
