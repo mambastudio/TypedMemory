@@ -6,7 +6,7 @@ package com.mamba.typedmemory.internal.ir;
 
 import com.mamba.typedmemory.api.Mem;
 import com.mamba.typedmemory.api.MemLayout;
-import com.mamba.typedmemory.api.MemLayoutString;
+import com.mamba.typedmemory.internal.layout.MemLayoutString;
 import static com.mamba.typedmemory.internal.ir.IRHelper.CD_MemoryLayout;
 import static com.mamba.typedmemory.internal.ir.IRHelper.CD_MemorySegment;
 import com.mamba.typedmemory.internal.emitter.BytecodeEmitter;

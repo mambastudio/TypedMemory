@@ -54,7 +54,6 @@ public interface Mem<T> {
                 cache.put(clazz, ctor);
             }
 
-            //var memLayout = MemLayout.of(clazz);
             var segment = arena.allocate(memLayout.layout(), size);
 
             return (Mem<T>) ctor.invoke(segment);

@@ -5,7 +5,7 @@
 package com.mamba.typedmemory.internal.ir;
 
 import com.mamba.typedmemory.api.MemLayout;
-import com.mamba.typedmemory.api.MemLayoutString;
+import com.mamba.typedmemory.internal.layout.MemLayoutString;
 import java.lang.constant.ClassDesc;
 import java.lang.foreign.GroupLayout;
 import java.lang.foreign.MemoryLayout;
@@ -15,9 +15,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import com.mamba.typedmemory.internal.ir.Expr;
-import com.mamba.typedmemory.internal.ir.IRHelper;
-import com.mamba.typedmemory.internal.ir.Stmt;
 import com.mamba.typedmemory.internal.ir.Stmt.Block;
 import static java.lang.constant.ConstantDescs.CD_VarHandle;
 

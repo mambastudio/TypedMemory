@@ -4,6 +4,7 @@
  */
 package com.mamba.typedmemory.api;
 
+import com.mamba.typedmemory.internal.layout.MemLayoutString;
 import com.mamba.typedmemory.internal.layout.FieldType;
 import com.mamba.typedmemory.internal.layout.FieldType.ArrayField;
 import com.mamba.typedmemory.internal.layout.FieldType.MemSize;
@@ -34,6 +35,10 @@ public record MemLayout(MemoryLayout layout, Optional<List<MemoryLayout>> groupL
     
     public MemLayout(MemoryLayout layout){
         this(layout, Optional.empty());
+    }
+    
+    public String describe() {
+        return MemLayoutString.of(this).stringLayout();
     }
         
     public boolean hasInnerLayouts(){

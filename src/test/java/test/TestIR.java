@@ -38,7 +38,6 @@ public class TestIR {
             }
             
             IO.println(colors.segment());
-        }
-        
+        }        
     }    
 }

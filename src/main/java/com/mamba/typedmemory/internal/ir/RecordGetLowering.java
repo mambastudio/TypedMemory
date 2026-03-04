@@ -1,15 +1,11 @@
 package com.mamba.typedmemory.internal.ir;
 
 import com.mamba.typedmemory.api.MemLayout;
-import com.mamba.typedmemory.api.MemLayoutString;
-import com.mamba.typedmemory.internal.ir.IRHelper;
+import com.mamba.typedmemory.internal.layout.MemLayoutString;
 import static com.mamba.typedmemory.internal.ir.IRHelper.CD_MemorySegment;
 import com.mamba.typedmemory.internal.ir.IRHelper.LocalInfo;
 import static com.mamba.typedmemory.internal.ir.IRHelper.classify;
 import static com.mamba.typedmemory.internal.ir.IRHelper.firstFreeSlot;
-import com.mamba.typedmemory.internal.ir.LocalSlotAllocator;
-import com.mamba.typedmemory.internal.ir.RecordVarHandlePlan;
-import com.mamba.typedmemory.internal.ir.Stmt;
 
 import static java.lang.constant.ConstantDescs.CD_VarHandle;
 import static java.lang.constant.ConstantDescs.CD_long;

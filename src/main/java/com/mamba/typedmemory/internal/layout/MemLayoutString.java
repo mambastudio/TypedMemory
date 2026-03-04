@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Record.java to edit this template
  */
-package com.mamba.typedmemory.api;
+package com.mamba.typedmemory.internal.layout;
 
+import com.mamba.typedmemory.api.MemLayout;
 import java.lang.foreign.GroupLayout;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.PaddingLayout;
@@ -18,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
-import com.mamba.typedmemory.internal.layout.LayoutRules;
 
 /**
  *
