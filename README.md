@@ -86,6 +86,6 @@ Status of currently implemented features:
 * [x] Records with primitives as fields
 * [ ] Inner records
 * [ ] Records with arrays as fields
-* [ ] Pointers
+* [ ] Pointers as fields
 * [ ] Unions
 
