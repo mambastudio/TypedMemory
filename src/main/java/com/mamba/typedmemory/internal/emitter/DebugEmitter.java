@@ -147,4 +147,9 @@ public class DebugEmitter implements CodeEmitter{
     public void lmul() {
         IO.println("lmul");
     }
+
+    @Override
+    public void ldiv() {
+        IO.println("ldiv"); 
+    }
 }

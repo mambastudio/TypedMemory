@@ -23,19 +23,18 @@ public class TestIR {
             long size = 10;
             record Color(float r, float g, float b){}
             
-            Mem<Color> colors = Mem.of(Color.class, arena, size);
+            Random random = new Random();
             
-            for(int i = 0; i<size; i++){
-                Random random = new Random();                
-                colors.set(i, new Color(
-                                random.nextFloat(0, 1),
-                                random.nextFloat(0, 1), 
-                                random.nextFloat(0, 1)));              
-            }
+            var colors = Mem.of(Color.class, arena, size).init(()-> new Color(random.nextFloat(0, 1),
+                                                                              random.nextFloat(0, 1),
+                                                                              random.nextFloat(0, 1)));
+            colors.query().forEach(IO::println);
             
-            for(int i = 0; i<size; i++){
-                IO.println(colors.get(i));
-            }
+            IO.println("FILTERED: ");
+            
+            colors.query()
+                    .filter(c -> c.r > 0.5f)
+                    .forEach(IO::println);
             
             IO.println(colors.segment());
         }        

@@ -175,4 +175,9 @@ public class BytecodeEmitter implements CodeEmitter{
     public void lmul(){
         builder.lmul();
     }
+
+    @Override
+    public void ldiv() {
+        builder.ldiv();
+    }
 }

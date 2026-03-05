@@ -41,6 +41,7 @@ public class TypedMemoryClassGenerator {
                 b.withField("segment", CD_MemorySegment, ACC_PRIVATE | ACC_FINAL);      
                 b.withField("layout", CD_MemoryLayout, ACC_PRIVATE | ACC_STATIC | ACC_FINAL);   
                 b.withField("STRIDE", CD_long, ACC_PRIVATE | ACC_STATIC | ACC_FINAL);   
+                b.withField("size", CD_long, ACC_PRIVATE | ACC_FINAL);
                 for(var name : memLayoutString.varHandleNames())
                     b.withField(name, CD_VarHandle, ACC_PRIVATE | ACC_STATIC | ACC_FINAL); //initialise static fields
                     
@@ -53,6 +54,18 @@ public class TypedMemoryClassGenerator {
                                 cb.aload(0);                            
                                 cb.aload(1);
                                 cb.putfield(owner, "segment", IRHelper.CD_MemorySegment);
+                                
+                                // compute size once
+                                cb.aload(0);
+                                cb.aload(1);
+                                cb.invokeinterface(
+                                    CD_MemorySegment,
+                                    "byteSize",
+                                    MethodTypeDesc.of(CD_long)
+                                );
+                                cb.getstatic(owner, "STRIDE", CD_long);
+                                cb.ldiv();
+                                cb.putfield(owner, "size", CD_long);
                             })
                         );
                         init.emit(new BytecodeEmitter(b0));
@@ -128,6 +141,14 @@ public class TypedMemoryClassGenerator {
                         cb.aload(0);
                         cb.invokevirtual(owner, "segment", MethodTypeDesc.of(IRHelper.CD_MemorySegment));
                         cb.invokeinterface(IRHelper.CD_MemorySegment, "address", MethodTypeDesc.of(CD_long));
+                        cb.lreturn();
+                    }
+                );
+                
+                b.withMethodBody("size", MethodTypeDesc.of(CD_long), ACC_PUBLIC | ACC_FINAL,
+                    cb -> {
+                        cb.aload(0);
+                        cb.getfield(owner, "size", CD_long);
                         cb.lreturn();
                     }
                 );

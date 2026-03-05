@@ -13,6 +13,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  *
@@ -23,9 +24,20 @@ public interface Mem<T> {
     public void set(long index, T t);
     public T get(long index);
     public MemorySegment segment();
+    public long size();
            
     default long address(){
         return segment().address();
+    }
+    
+    default Mem<T> init(Supplier<T> supplier){
+        for (long i = 0; i < size(); i++)
+            set(i, supplier.get());
+        return this;
+    }
+    
+    default MemQuery<T> query() {
+        return new MemQuery<>(new MemQuery.Stage.SourceStage<>(this));
     }
     
     public static <T extends Record> Mem<T> of(Class<T> clazz, Arena arena, long size) {
