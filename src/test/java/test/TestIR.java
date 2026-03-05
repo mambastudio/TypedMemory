@@ -25,9 +25,10 @@ public class TestIR {
             
             Random random = new Random();
             
-            var colors = Mem.of(Color.class, arena, size).init(()-> new Color(random.nextFloat(0, 1),
-                                                                              random.nextFloat(0, 1),
-                                                                              random.nextFloat(0, 1)));
+            var colors = Mem.of(Color.class, arena, size)
+                    .init(()-> new Color(random.nextFloat(0, 1),
+                                         random.nextFloat(0, 1),
+                                         random.nextFloat(0, 1)));
             colors.query().forEach(IO::println);
             
             IO.println("FILTERED: ");
