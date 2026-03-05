@@ -13,6 +13,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 
 /**
@@ -25,6 +26,7 @@ public interface Mem<T> {
     public T get(long index);
     public MemorySegment segment();
     public long size();
+    public Class<T> type();
            
     default long address(){
         return segment().address();
@@ -40,6 +42,20 @@ public interface Mem<T> {
         return new MemQuery<>(new MemQuery.Stage.SourceStage<>(this));
     }
     
+    default void traverse(ObjLongConsumer<T> consumer) {
+        long n = size();
+        for (long i = 0; i < n; i++)
+            consumer.accept(get(i), i);
+    }
+    
+    @SuppressWarnings("unchecked")
+    default Mem<T> allocateLike(Arena arena, long size) {
+        if (type().isRecord())
+            return Mem.record((Class) type(), arena, size);
+        else
+            return Mem.union(type(), arena, size);
+    }
+        
     public static <T extends Record> Mem<T> of(Class<T> clazz, Arena arena, long size) {
         try {
             var cache = MemCache.of();
@@ -73,6 +89,14 @@ public interface Mem<T> {
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    static <T extends Record> Mem<T> record(Class<T> clazz, Arena arena, long size) {
+        return of(clazz, arena, size);
+    }
+    
+    static <T> Mem<T> union(Class<T> clazz, Arena arena, long size){
+        throw new UnsupportedOperationException("Not implemented yet");
     }
               
     final class MemCache {

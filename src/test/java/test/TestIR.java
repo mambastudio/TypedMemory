@@ -14,7 +14,7 @@ import java.util.Random;
  */
 public class TestIR {
     void main() throws Exception{
-        test();
+        test2();
        
     }
         
@@ -37,7 +37,46 @@ public class TestIR {
                     .filter(c -> c.r > 0.5f)
                     .forEach(IO::println);
             
-            IO.println(colors.segment());
+         //   IO.println(colors.segment());
         }        
-    }    
+    } 
+  
+    void test2(){
+        
+        
+        try (Arena arena = Arena.ofConfined()) {
+            record Color(float r, float g, float b) {}
+            int size = 10;
+            Random random = new Random();
+
+            // allocate memory
+            Mem<Color> colors = Mem.of(Color.class, arena, size);
+
+            // fill memory
+            for (int i = 0; i < size; i++) {
+                colors.set(i, new Color(
+                        random.nextFloat(),
+                        random.nextFloat(),
+                        random.nextFloat()));
+            }
+
+            IO.println("ALL COLORS");
+            colors.query()
+                  .forEach(IO::println);
+
+            IO.println("\nFILTERED (r > 0.5)");
+            colors.query()
+                  .filter(c -> c.r() > 0.5f)
+                  .forEach(IO::println);
+
+            IO.println("\nCOLLECTED (r > 0.5)");
+           
+            Mem<Color> filtered =
+                    colors.query()
+                          .filter(c -> c.r() > 0.5f)
+                          .collect(arena);
+                          
+            filtered.query().forEach(IO::println);
+        }
+    }
 }

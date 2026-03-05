@@ -152,6 +152,13 @@ public class TypedMemoryClassGenerator {
                         cb.lreturn();
                     }
                 );
+                
+                b.withMethodBody("type", MethodTypeDesc.of(ClassDesc.of("java.lang.Class")), ACC_PUBLIC | ACC_FINAL,
+                    cb -> {
+                        cb.ldc(recordDesc); // pushes Color.class
+                        cb.areturn();
+                    }
+                );
             }
         );
     }
