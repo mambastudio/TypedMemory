@@ -82,9 +82,10 @@ try (Arena arena = Arena.ofConfined()) {
 }
 ~~~
 ## Features
-The following are features currently implemented:
+Status of currently implemented features:
 * [x] Records with primitives as fields
 * [ ] Inner records
 * [ ] Records with arrays as fields
+* [ ] Pointers
 * [ ] Unions
 
