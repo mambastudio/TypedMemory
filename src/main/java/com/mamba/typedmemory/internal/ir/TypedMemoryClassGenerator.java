@@ -68,6 +68,7 @@ public class TypedMemoryClassGenerator {
                                 cb.putfield(owner, "size", CD_long);
                             })
                         );
+                        
                         init.emit(new BytecodeEmitter(b0));
                     }
                 );

@@ -4,12 +4,14 @@
  */
 package test;
 
+import com.mamba.typedmemory.api.Mem;
 import com.mamba.typedmemory.api.MemLayout;
 import com.mamba.typedmemory.api.size;
 import com.mamba.typedmemory.internal.emitter.DebugEmitter;
 import com.mamba.typedmemory.internal.ir.RecordSetLowering;
 import com.mamba.typedmemory.internal.layout.MemLayoutString;
 import java.lang.constant.ClassDesc;
+import java.lang.foreign.Arena;
 
 /**
  *
@@ -17,7 +19,7 @@ import java.lang.constant.ClassDesc;
  */
 public class TestLayout {
     void main(){
-        test3();
+        test4();
     }
     
     public void test1(){
@@ -46,4 +48,16 @@ public class TestLayout {
         var stmt = recordLower.emitSet(ClassDesc.ofDescriptor(TestLayout.class.descriptorString()),Point.class, mL);
         stmt.emit(new DebugEmitter());
     }
+    
+    
+    public void test4(){
+        record Student(int id, int score, boolean active){}
+        try (Arena arena = Arena.ofConfined()) {
+            var students = Mem.of(Student.class, arena, 100_000_000);
+            IO.println(MemLayout.memorySummary(students));
+            IO.println();
+            IO.println(MemLayout.describe(Student.class));
+        }
+    }
+    
 }

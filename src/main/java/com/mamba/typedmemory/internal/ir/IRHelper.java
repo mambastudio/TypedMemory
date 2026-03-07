@@ -18,6 +18,7 @@ public class IRHelper {
     public static final ClassDesc CD_ValueLayout    = ClassDesc.of(ValueLayout.class.getName());
     public static final ClassDesc CD_PathElement    = ClassDesc.of(MemoryLayout.PathElement.class.getName());
     public static final ClassDesc CD_Record         = ClassDesc.ofDescriptor(Record.class.descriptorString());
+    public static final ClassDesc CD_PaddingLayout  = ClassDesc.ofDescriptor(PaddingLayout.class.descriptorString());
     
     public enum JVMType {
         INT_LIKE,
@@ -126,5 +127,19 @@ public class IRHelper {
                 
                         out.invokespecial(desc, INIT_NAME, constructorRecordTypeDesc(type));
         });
+    }
+    
+    public static MethodTypeDesc methodTypeDesc(Class<?> owner, String name, Class<?>... params) {
+        try {
+            var method = owner.getDeclaredMethod(name, params);
+            return MethodTypeDesc.ofDescriptor(
+                    MethodType.methodType(
+                            method.getReturnType(),
+                            method.getParameterTypes()
+                    ).descriptorString()
+            );
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

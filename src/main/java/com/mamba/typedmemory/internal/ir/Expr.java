@@ -11,6 +11,7 @@ import static java.lang.constant.ConstantDescs.CD_String;
 import static java.lang.constant.ConstantDescs.CD_long;
 import static java.lang.constant.ConstantDescs.CD_VarHandle;
 import java.lang.constant.MethodTypeDesc;
+import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.ValueLayout;
 import java.util.List;
 
@@ -122,7 +123,7 @@ public interface Expr {
         @Override
         public void emit(CodeEmitter out) {
             out.ldc2(size);
-            out.invokestatic(CD_MemoryLayout, "paddingLayout", MethodTypeDesc.of(CD_MemoryLayout, CD_long));
+            out.invokestatic(CD_MemoryLayout, "paddingLayout", IRHelper.methodTypeDesc(MemoryLayout.class, "paddingLayout", long.class), true);
         }
     }
 

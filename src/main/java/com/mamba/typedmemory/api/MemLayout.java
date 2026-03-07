@@ -191,4 +191,69 @@ public record MemLayout(MemoryLayout layout, Optional<List<MemoryLayout>> groupL
         
         return new MemLayout(MemoryLayout.structLayout(layArray).withName(field.type().getSimpleName()), groupLayoutLists);
     }
+    
+    private static String formatBytes(long bytes) {
+        String[] units = {"B","KiB","MiB","GiB","TiB","PiB"};
+
+        double value = bytes;
+        int i = 0;
+
+        while (value >= 1024 && i < units.length - 1) {
+            value /= 1024;
+            i++;
+        }
+
+        return String.format("%.2f %s", value, units[i]);
+    }
+    
+    private static String humanReadableSize(long bytes) {
+        return formatBytes(bytes);
+    }
+    
+    public static<T>  String memorySummary(Mem<T> mem) {
+        return "%d elements (%s)".formatted(
+            mem.size(),
+            humanReadableSize(mem.segment().byteSize())
+        );
+    }
+    
+    public static String describe(Class<? extends Record> type) {
+        var layout = MemLayout.of(type).layout();
+        var sb = new StringBuilder();
+
+        sb.append(type.getSimpleName()).append(" layout\n");
+        sb.append("----------------\n");
+
+        var components = type.getRecordComponents();
+
+        long used = 0;
+
+        for (var c : components) {
+            long offset = layout.byteOffset(
+                    MemoryLayout.PathElement.groupElement(c.getName())
+            );
+
+            var element = layout.select(
+                    MemoryLayout.PathElement.groupElement(c.getName())
+            );
+
+            long size = element.byteSize();
+
+            sb.append("%-10s %-10s offset %d\n"
+                    .formatted(c.getName(), c.getType().getSimpleName(), offset));
+
+            used += size;
+        }
+
+        long total = layout.byteSize();
+        long padding = total - used;
+
+        if (padding > 0) {
+            sb.append("padding    ").append(padding).append(" bytes\n");
+        }
+
+        sb.append("\nsize: ").append(total).append(" B");
+
+        return sb.toString();
+    }
 }
